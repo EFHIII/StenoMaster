@@ -82,9 +82,25 @@ function shortToLongSteno(str) {
     '-Z': false,
   };
 
+  let numberTranslation = {
+    '0': 'O',
+    '1': 'S',
+    '2': 'T',
+    '3': 'P',
+    '4': 'H',
+    '5': 'A',
+    '6': '-F',
+    '7': '-P',
+    '8': '-L',
+    '9': '-T',
+  };
+
   let initial = '#STKPWHR';
+  let initialNumbers = '1234';
   let vowel = 'AO*EU-';
+  let vowelNumbers = '50';
   let final = 'FRPBLGTSDZ';
+  let finalNumbers = '6789';
 
   let at = 'start';
 
@@ -92,16 +108,26 @@ function shortToLongSteno(str) {
     if(at == 'start') {
       if(initial.indexOf(str[i]) >= 0) {
         ans[str[i]] = true;
+      } else if(initialNumbers.indexOf(str[i]) >= 0) {
+        ans['#'] = true;
+        ans[numberTranslation[str[i]]] = true;
       } else if(vowel.indexOf(str[i]) >= 0) {
         if(str[i] !== '-') {
           ans[str[i]] = true;
         }
         at = 'end';
+      } else if(vowelNumbers.indexOf(str[i]) >= 0) {
+        ans[numberTranslation[str[i]]] = true;
+        at = 'end';
       }
     } else if(vowel.indexOf(str[i]) >= 0) {
       ans[str[i]] = true;
+    } else if(vowelNumbers.indexOf(str[i]) >= 0) {
+      ans[numberTranslation[str[i]]] = true;
     } else if(final.indexOf(str[i]) >= 0) {
       ans['-' + str[i]] = true;
+    } else if(finalNumbers.indexOf(str[i]) >= 0) {
+      ans[numberTranslation[str[i]]] = true;
     }
   }
 
@@ -162,7 +188,7 @@ function draw() {
     return;
   }
   willDraw = false;
-  if(txt[0] !== ' ' || txt.length == 1) {
+  if(' 1234567890'.indexOf(txt[0]) < 0 || txt === ' ') {
     txt = '';
     return;
   }
