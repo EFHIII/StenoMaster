@@ -1,0 +1,30 @@
+Kay
+ KAEU
+can
+ K
+stay.
+ STAEU -FPLT
+Kay
+ KAEU
+can
+ K
+skate.
+ SKAEUT -FPLT
+Sal
+ SAL
+is a
+ SA
+star.
+ STAR -FPLT
+scare
+ SKAEUR
+Kay.
+ KAEU -FPLT
+Sal
+ SAL
+can
+ K
+scare
+ SKAEUR
+Kay.
+ KAEU -FPLT

@@ -1,9 +1,35 @@
 Sal
  SAL
-<is>
- S
-<the>
+sat.
+ SAT -FPLT
+Sass
+ SAS
+Sal.
+ SAL -FPLT
+Sass
+ SAS
+the
  -T
+pal.
+ PAL -FPLT
+Pat
+ PAT
+Sal.
+ SAL -FPLT
+Sal
+ SAL
+is
+ S
+at
+ AT
+the
+ -T
+pass.
+ PAS -FPLT
+Sal
+ SAL
+is the
+ S-T
 pal.
  PAL -FPLT
 The
@@ -14,9 +40,15 @@ is
  S
 Sal.
  SAL -FPLT
-Sal
- SAL
-<is the>
- S-T
+The
+ -T
+pal
+ PAL
+sat.
+ SAT -FPLT
+Pass
+ PAS
+the
+ -T
 pal.
  PAL -FPLT

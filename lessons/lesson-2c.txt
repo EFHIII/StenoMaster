@@ -1,0 +1,136 @@
+Sal
+ SAL
+can
+ K
+sail.
+ SAEUL -FPLT
+Sal
+ SAL
+can
+ K
+care.
+ KAEUR -FPLT
+The
+ -T
+pal
+ PAL
+can
+ K
+pay.
+ PAEU -FPLT
+The
+ -T
+pal
+ PAL
+can
+ K
+sail.
+ SAEUL -FPLT
+The
+ -T
+pal
+ PAL
+can
+ K
+tear
+ TAEUR
+the
+ -T
+sail.
+ SAEUL -FPLT
+Can
+ K
+the
+ -T
+pal
+ PAL
+pay?
+ PAEU STPH
+can
+ K
+Kay
+ KAEU
+sail?
+ SAEUL STPH
+Kay
+ KAEU
+can
+ K
+pay
+ PAEU
+Sal.
+ SAL -FPLT
+Sal
+ SAL
+ate.
+ AEUT -FPLT
+The
+ -T
+pal
+ PAL
+ate.
+ AEUT -FPLT
+The
+ -T
+cat
+ KAT
+ate.
+ AEUT -FPLT
+The
+ -T
+cat
+ KAT
+ate
+ AEUT
+a
+ AEU
+pail.
+ PAEUL -FPLT
+Pay
+ PAEU
+Sal.
+ SAL -FPLT
+Pay
+ PAEU
+Kay.
+ KAEU -FPLT
+Pay
+ PAEU
+the
+ -T
+pal.
+ PAL -FPLT
+Tear
+ TAEUR
+the
+ -T
+pail.
+ PAEUL -FPLT
+Can
+ K
+the
+ -T
+pal
+ PAL
+care?
+ KAEUR STPH
+Can
+ K
+Kay
+ KAEU
+care?
+ KAEUR STPH
+Is
+ S
+Kay
+ KAEU
+a
+ AEU
+star?
+ STAR STPH
+Sal
+ SAL
+is a
+ SA
+star.
+ STAR -FPLT

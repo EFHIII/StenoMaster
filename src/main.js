@@ -48,11 +48,13 @@ function loadLessonText(txt) {
   drawLessonText();
 }
 
-function loadLesson(name) {
-  getFile('lessons/' + name + '.txt', loadLessonText);
+let onLesson = 0;
+function loadLesson(id) {
+  onLesson = id % lessons.length;
+  getFile('lessons/' + lessons[onLesson] + '.txt', loadLessonText);
 }
 
-loadLesson(lessons[0]);
+loadLesson(onLesson);
 
 // #STKPWHRAO*EUFRPBLGTSDZ
 function shortToLongSteno(str) {
@@ -81,6 +83,10 @@ function shortToLongSteno(str) {
     '-D': false,
     '-Z': false,
   };
+
+  if(!str) {
+    return ans;
+  }
 
   let numberTranslation = {
     '0': 'O',
@@ -148,7 +154,7 @@ function drawLessonText() {
   for(let i = 0; i < lessonText.length; i++) {
     textHTML += `<span class='phrase${lessonPhrase>i?' typed':''}' id = 'lesson-${i}'>${escapeHtml(lessonText[i])}</span>`;
     if(i < lessonText.length - 1) {
-      textHTML += `<span class='phrase${lessonPhrase>i+1?' typed':''}'>&nbsp;</span>`;
+      textHTML += `<span class='${lessonPhrase>i+1?'typed':''}'> </span>`;
     }
   }
   text.innerHTML = textHTML;
@@ -160,6 +166,10 @@ function updateStats() {
   let strokes = lessonStrokes.reduce((a, b) => a + b.length, 0);
   accuracy.innerText = `${(((strokes - mistakes) / strokes * 1000) >> 0 ) / 10}%`;
   wpm.innerText = `${((strokes / 2 / minutes * 10) >> 0) / 10} WPM`;
+
+  if(mistakes === 0) {
+    loadLesson(onLesson + 1);
+  }
 }
 
 function displayStroke() {
