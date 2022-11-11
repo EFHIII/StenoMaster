@@ -1,3 +1,3 @@
 let lessons = [
-  'lessons-1'
+  'lesson-1'
 ];

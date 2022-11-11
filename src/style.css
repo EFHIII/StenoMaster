@@ -1,5 +1,72 @@
-body{
+body {
   background-color: black;
   color: white;
   font-family: "Fira Code";
+}
+
+/* prompt box */
+#text {
+  font-size: 2em;
+  border-style: solid;
+  border-color: grey;
+  margin: 0.5em;
+  padding: 0.5em;
+  width: calc(100% - 2em);
+  height: calc(100vh - 12em);
+  overflow-y: scroll;
+}
+
+.phrase {
+  display: inline-block;
+}
+
+.typed {
+  background-color: grey;
+}
+
+/* steno keyboard diagram */
+#keyboard {
+  font-size: 3em;
+  text-align: center;
+}
+
+.stenoKey {
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+}
+
+/* stats */
+#accuracy {
+  padding: 0.25em;
+  color: grey;
+  font-size: 2em;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+}
+
+#wpm {
+  padding: 0.25em;
+  color: grey;
+  font-size: 2em;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+}
+
+/* Custom Scrollbar*/
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

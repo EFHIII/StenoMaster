@@ -1,14 +1,22 @@
-Sal SAL
-<is> S
-<the> -T
-pal PAL
-. -FPLT
-The -T
-pal PAL
-is S
-Sal SAL
-. -FPLT
-Sal SAL
-<is the> SA
-pal PAL
-. -FPLT
+Sal
+ SAL
+<is>
+ S
+<the>
+ -T
+pal.
+ PAL -FPLT
+The
+ -T
+pal
+ PAL
+is
+ S
+Sal.
+ SAL -FPLT
+Sal
+ SAL
+<is the>
+ S-T
+pal.
+ PAL -FPLT
