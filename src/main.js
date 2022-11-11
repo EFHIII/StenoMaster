@@ -40,8 +40,8 @@ function loadLessonText(txt) {
   lessonStrokes = [];
   let lines = txt.split('\n');
   for(let i = 0; i < lines.length - 1; i += 2) {
-    lessonText.push(lines[i]);
-    lessonStrokes.push(lines[i + 1].split(' ').slice(1));
+    lessonText.push(lines[i].replace(/\r/g,''));
+    lessonStrokes.push(lines[i + 1].replace(/\r/g,'').split(' ').slice(1));
   }
   lessonPhrase = 0;
   lessonStroke = 0;
@@ -162,7 +162,7 @@ function draw() {
     return;
   }
   willDraw = false;
-  if(txt[0] !== ' ') {
+  if(txt[0] !== ' ' || txt.length == 1) {
     txt = '';
     return;
   }
@@ -179,7 +179,7 @@ function draw() {
       if(lessonPhrase >= lessonStrokes.length) {
         updateStats();
         mistakes = 0;
-        lessonStrokes = 0;
+        lessonStroke = 0;
         lessonPhrase = 0;
       }
     }
