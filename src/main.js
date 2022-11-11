@@ -40,8 +40,8 @@ function loadLessonText(txt) {
   lessonStrokes = [];
   let lines = txt.split('\n');
   for(let i = 0; i < lines.length - 1; i += 2) {
-    lessonText.push(lines[i].slice(0, -1));
-    lessonStrokes.push(lines[i + 1].slice(0, -1).split(' ').slice(1));
+    lessonText.push(lines[i]);
+    lessonStrokes.push(lines[i + 1].split(' ').slice(1));
   }
   lessonPhrase = 0;
   lessonStroke = 0;
