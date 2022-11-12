@@ -4,6 +4,52 @@ body {
   font-family: "Fira Code";
 }
 
+/* lesson select screen */
+@media (min-width: 1200px) {
+  #settings {
+    text-align: left;
+    position: fixed;
+    left: 0;
+  }
+}
+
+#lessonSelect {
+  text-align: center;
+}
+
+#lessonSelect label {
+  font-size: 2em;
+}
+
+#lessonSelect input[type=checkbox] {
+  position: relative;
+  top: 0.5em;
+  width: 3em;
+  height: 3em;
+}
+
+#lessonSelect input[type=number] {
+  font-size: 2em;
+  width: 2em;
+  color: white;
+  background-color: #333;
+  border: none;
+}
+
+.scene {
+  display: none;
+}
+
+.lessonLink {
+  font-size: 2em;
+  color: #47a;
+  text-decoration: none;
+}
+
+.lessonLink:hover {
+  text-decoration: underline;
+}
+
 /* prompt box */
 #text {
   font-size: 2em;
@@ -36,22 +82,25 @@ body {
 }
 
 /* stats */
-#accuracy {
+#wpm, #accuracy, #progress {
   padding: 0.25em;
   color: grey;
   font-size: 2em;
   position: fixed;
-  left: 0;
   bottom: 0;
 }
 
+#accuracy {
+  left: 0;
+}
+
 #wpm {
-  padding: 0.25em;
-  color: grey;
-  font-size: 2em;
-  position: fixed;
   right: 0;
-  bottom: 0;
+}
+
+#progress {
+  width: 100%;
+  text-align: center;
 }
 
 /* Custom Scrollbar*/

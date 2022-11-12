@@ -1,19 +1,138 @@
-let text = document.getElementById('text');
-let keyboard = document.getElementById('keyboard');
-let accuracy = document.getElementById('accuracy');
-let wpm = document.getElementById('wpm');
+let autoAdvance = true;
+let onLesson = 0;
+let scene = 'lessonSelect';
 
-let t = Date.now();
-
-let txt = '';
-let willDraw = false;
+let repetitions = 10;
+let accuracyTarget = 96;
+let atAccuracy = 1;
 
 let lessonText = [];
 let lessonStrokes = [];
 let lessonPhrase = 0;
 let lessonStroke = 0;
 let mistakes = 0;
+
+let sceneDivs = {
+  lesson: document.getElementById('lesson'),
+  lessonSelect: document.getElementById('lessonSelect'),
+};
+
+function changeScene(toScene) {
+  switch(toScene) {
+    case 'lesson':
+      loadLesson(onLesson);
+      break;
+  }
+  for(let div in sceneDivs) {
+    if(div == toScene) {
+      sceneDivs[div].style.display = 'block';
+      continue;
+    }
+    sceneDivs[div].style.display = 'none';
+  }
+  scene = toScene;
+}
+
+(new URL(window.location.href)).searchParams.forEach((value, name) => {
+  switch(name) {
+    case 'lesson':
+      if(lessons.indexOf(value) >= 0) {
+        onLesson = lessons.indexOf(value);
+        scene = 'lesson';
+      }
+      break;
+    case 'auto-advance':
+      if(value.toLowerCase() == 'false') {
+        autoAdvance = false;
+      }
+      break;
+    case 'repetitions':
+      if(parseInt(value) >= 1 && parseInt(value) <= 100) {
+        repetitions = parseInt(value);
+      }
+      break;
+    case 'accuracy':
+      if(parseInt(value) >= 96 && parseInt(value) <= 100) {
+        accuracyTarget = parseInt(value);
+      }
+      break;
+    case 'at-accuracy':
+      if(parseInt(value) >= 1 && parseInt(value) <= 100) {
+        atAccuracy = parseInt(value);
+      }
+      break;
+  }
+});
+
+changeScene(scene);
+
+let lessonList = document.getElementById('lessonList');
+
+function toLessonText(lesson) {
+  return lesson.slice(0,1).toUpperCase()+lesson.replace(/-/g,' ').slice(1);
+}
+
+function updateLessonList() {
+  lessonList.innerHTML = '';
+  for(let lesson of lessons) {
+    lessonList.innerHTML += `<a class='lessonLink' href='?lesson=` +
+      lesson +
+      (
+        autoAdvance ?
+        (repetitions === 10 ? '' : '&repetitions=' + repetitions) +
+        (accuracyTarget === 96 ? '' : '&accuracy=' + accuracyTarget) +
+        (atAccuracy === 1? '' : '&atAccuracy=' + atAccuracy) :
+        '&auto-advance=false'
+      ) +
+      `'>${toLessonText(lesson)}</a><br>`;
+  }
+}
+
+updateLessonList();
+
+document.getElementById('autoAdvance').addEventListener('change', (event) => {
+  autoAdvance = event.target.checked;
+  document.getElementById('autoAdvanceSettings').style.display = autoAdvance ? 'block' : 'none';
+  updateLessonList();
+});
+
+document.getElementById('accuracyTarget').addEventListener('change', (event) => {
+  let val = parseInt(event.target.value);
+  if(val >= 96 && val <= 100) {
+    accuracyTarget = val;
+    updateLessonList();
+  }
+});
+
+document.getElementById('repetitions').addEventListener('change', (event) => {
+  let val = parseInt(event.target.value);
+  if(val >= 1 && val <= 100) {
+    repetitions = val;
+    updateLessonList();
+  }
+});
+
+document.getElementById('atAccuracy').addEventListener('change', (event) => {
+  let val = parseInt(event.target.value);
+  if(val >= 1 && val <= 100) {
+    atAccuracy = val;
+    updateLessonList();
+  }
+});
+
+let text = document.getElementById('text');
+let keyboard = document.getElementById('keyboard');
+let accuracy = document.getElementById('accuracy');
+let wpm = document.getElementById('wpm');
+let progress = document.getElementById('progress');
+
+let t = Date.now();
+
+let txt = '';
+let willDraw = false;
+
 let startingTime = 0;
+let progressStatus = [0, 0];
 
 function getFile(file, callback) {
   var xmlhttp = new XMLHttpRequest();
@@ -35,31 +154,35 @@ function getFile(file, callback) {
   xmlhttp.send();
 }
 
+function updateProgressText() {
+  progress.innerHTML = autoAdvance ? `${toLessonText(lessons[onLesson])} <span style='color:white'>${progressStatus[0]}/${repetitions}</span> with <span style='color:white'>${progressStatus[1]}/${atAccuracy}</span> at ${accuracyTarget}%` : lessons[onLesson];
+}
+
 function loadLessonText(txt) {
   lessonText = [];
   lessonStrokes = [];
   let lines = txt.split('\n');
   for(let i = 0; i < lines.length - 1; i += 2) {
-    lessonText.push(lines[i].replace(/\r/g,''));
-    lessonStrokes.push(lines[i + 1].replace(/\r/g,'').split(' ').slice(1));
+    lessonText.push(lines[i].replace(/\r/g, ''));
+    lessonStrokes.push(lines[i + 1].replace(/\r/g, '').split(' ').slice(1));
   }
   lessonPhrase = 0;
   lessonStroke = 0;
-  drawLessonText();
+  mistakes = 0;
+  updateProgressText();
+  drawtoLessonText();
 }
 
-let onLesson = 0;
 function loadLesson(id) {
   onLesson = id % lessons.length;
   getFile('lessons/' + lessons[onLesson] + '.txt', loadLessonText);
 }
 
-loadLesson(onLesson);
-
-// #STKPWHRAO*EUFRPBLGTSDZ
+// #^STKPWHRAO*EUFRPBLGTSDZ
 function shortToLongSteno(str) {
   let ans = {
     '#': false,
+    '^': false,
     'S': false,
     'T': false,
     'K': false,
@@ -90,7 +213,7 @@ function shortToLongSteno(str) {
 
   let numberTranslation = {
     '0': 'O',
-    '1': 'S',
+    '1': '^',
     '2': 'T',
     '3': 'P',
     '4': 'H',
@@ -101,7 +224,7 @@ function shortToLongSteno(str) {
     '9': '-T',
   };
 
-  let initial = '#STKPWHR';
+  let initial = '#^STKPWHR';
   let initialNumbers = '1234';
   let vowel = 'AO*EU-';
   let vowelNumbers = '50';
@@ -149,7 +272,7 @@ function escapeHtml(unsafe) {
     .replace(/'/g, "&#039;");
 }
 
-function drawLessonText() {
+function drawtoLessonText() {
   let textHTML = '';
   for(let i = 0; i < lessonText.length; i++) {
     textHTML += `<span class='phrase${lessonPhrase>i?' typed':''}' id = 'lesson-${i}'>${escapeHtml(lessonText[i])}</span>`;
@@ -158,7 +281,9 @@ function drawLessonText() {
     }
   }
   text.innerHTML = textHTML;
-  document.getElementById(`lesson-${lessonPhrase}`).scrollIntoView({behavior: 'smooth'});
+  document.getElementById(`lesson-${lessonPhrase}`).scrollIntoView({
+    behavior: 'smooth'
+  });
 }
 
 function updateStats() {
@@ -167,16 +292,29 @@ function updateStats() {
   accuracy.innerText = `${(((strokes - mistakes) / strokes * 1000) >> 0 ) / 10}%`;
   wpm.innerText = `${((strokes / 2 / minutes * 10) >> 0) / 10} WPM`;
 
-  if(mistakes === 0) {
-    loadLesson(onLesson + 1);
+  progressStatus[0]++;
+  if((strokes - mistakes) / strokes >= accuracyTarget / 100) {
+    progressStatus[1]++;
   }
+  updateProgressText();
+
+  if(autoAdvance && progressStatus[0] >= repetitions && progressStatus[1] >= atAccuracy) {
+    onLesson++;
+    progressStatus = [0, 0];
+    setTimeout(_ => {
+      wpm.innerText = 'N/A';
+      accuracy.innerText = 'N/A';
+    }, 2000);
+  }
+
+  setTimeout(_ => loadLesson(onLesson), 2000);
 }
 
 function displayStroke() {
   let stroke = shortToLongSteno(lessonStrokes[lessonPhrase][lessonStroke]);
   for(let key in stroke) {
     if(!stroke[key]) continue;
-    let keys = document.getElementsByClassName('steno'+key);
+    let keys = document.getElementsByClassName('steno' + key);
     for(let div of keys) {
       div.style.backgroundColor = 'grey';
     }
@@ -185,7 +323,7 @@ function displayStroke() {
 
 function hideStroke() {
   for(let key in shortToLongSteno('')) {
-    let keys = document.getElementsByClassName('steno'+key);
+    let keys = document.getElementsByClassName('steno' + key);
     for(let div of keys) {
       div.style.backgroundColor = '';
     }
@@ -203,7 +341,7 @@ function draw() {
     return;
   }
 
-  if(txt.slice(1) == lessonStrokes[lessonPhrase][lessonStroke]) {
+  if(txt.slice(1) == lessonStrokes[lessonPhrase][lessonStroke].replace('^', 'S')) {
     hideStroke();
     if(lessonPhrase == 0 && lessonStroke == 0) {
       startingTime = Date.now();
@@ -219,18 +357,20 @@ function draw() {
         lessonPhrase = 0;
       }
     }
-    drawLessonText();
-  }
-  else{
+    drawtoLessonText();
+  } else {
     mistakes++;
     displayStroke();
   }
 
-  console.log(txt);
   txt = '';
 }
 
 function keydown(event) {
+  if(scene !== 'lesson') {
+    return;
+  }
+
   if(event.key !== 'Shift') {
     txt += event.key;
   }
