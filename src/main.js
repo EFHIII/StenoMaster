@@ -163,7 +163,27 @@ function loadLessonText(txt) {
   lessonStrokes = [];
   let lines = txt.split('\n');
   for(let i = 0; i < lines.length - 1; i += 2) {
-    lessonText.push(lines[i].replace(/\r/g, ''));
+    // underline
+    let regex = new RegExp('(?:\\s|^)_[a-zA-Z0-9][a-zA-Z0-9 ]+[a-zA-Z0-9]_(?:\\s|$)','g');
+    let line = lines[i].replace(/\r/g, '');
+    let matches = line.match(regex) || [];
+    for(let match of matches) {
+      line = line.replace(match, match.replace('_','<u>').replace('_','</u>'));
+    }
+    // bold
+    regex = new RegExp('(?:\\s|^)\\*\\*[a-zA-Z0-9][a-zA-Z0-9 ]+[a-zA-Z0-9]\\*\\*(?:\\s|$)','g');
+    matches = line.match(regex) || [];
+    for(let match of matches) {
+      line = line.replace(match, match.replace('**','<b>').replace('**','</b>'));
+    }
+    // italic
+    regex = new RegExp('(?:\\s|^)\\*[a-zA-Z0-9][a-zA-Z0-9 ]+[a-zA-Z0-9]\\*(?:\\s|$)','g');
+    matches = line.match(regex) || [];
+    for(let match of matches) {
+      line = line.replace(match, match.replace('*','<i>').replace('*','</i>'));
+    }
+
+    lessonText.push(line);
     lessonStrokes.push(lines[i + 1].replace(/\r/g, '').split(' ').slice(1));
   }
   lessonPhrase = 0;
@@ -269,7 +289,13 @@ function escapeHtml(unsafe) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(/'/g, "&#039;")
+    .replace(/&lt;u&gt;/g, "<u>")
+    .replace(/&lt;\/u&gt;/g, "</u>")
+    .replace(/&lt;i&gt;/g, "<i>")
+    .replace(/&lt;\/i&gt;/g, "</i>")
+    .replace(/&lt;b&gt;/g, "<b>")
+    .replace(/&lt;\/b&gt;/g, "</b>");
 }
 
 function drawtoLessonText() {
@@ -282,7 +308,8 @@ function drawtoLessonText() {
   }
   text.innerHTML = textHTML;
   document.getElementById(`lesson-${lessonPhrase}`).scrollIntoView({
-    behavior: 'smooth'
+    behavior: 'smooth',
+    block: 'center'
   });
 }
 

@@ -130,7 +130,7 @@ star?
  STAR STPH
 Sal
  SAL
-is a
+_is a_
  SA
 star.
  STAR -FPLT

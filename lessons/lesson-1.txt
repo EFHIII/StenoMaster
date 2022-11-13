@@ -28,7 +28,7 @@ pass.
  PAS -FPLT
 Sal
  SAL
-is the
+_is the_
  S-T
 pal.
  PAL -FPLT
