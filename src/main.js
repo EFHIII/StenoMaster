@@ -155,7 +155,7 @@ function getFile(file, callback) {
 }
 
 function updateProgressText() {
-  progress.innerHTML = autoAdvance ? `${toLessonText(lessons[onLesson])} <span style='color:white'>${progressStatus[0]}/${repetitions}</span> with <span style='color:white'>${progressStatus[1]}/${atAccuracy}</span> at ${accuracyTarget}%` : lessons[onLesson];
+  progress.innerHTML = autoAdvance ? `${toLessonText(lessons[onLesson])} <span style='color:white'>${progressStatus[0]}/${repetitions}</span> with <span style='color:white'>${progressStatus[1]}/${atAccuracy}</span> at ${accuracyTarget}%` : toLessonText(lessons[onLesson]);
 }
 
 function loadLessonText(txt) {
