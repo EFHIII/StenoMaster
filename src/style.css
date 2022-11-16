@@ -44,15 +44,15 @@ body {
   display: inline-block;
   text-align: Right;
   color: grey;
-  width: 50%;
+  width: calc(50% - 5em);
   position: relative;
   top: -0.3em;
 }
 
 .lessonLinkName {
   display: inline-block;
-  width: 50%;
   text-align: left;
+  width: calc(50% + 5em);
 }
 
 .lessonLinkBest {

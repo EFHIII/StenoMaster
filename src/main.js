@@ -503,7 +503,7 @@ function draw() {
 
 function keydown(event) {
   if(event.key === 'Escape') {
-    window.location.href = '/';
+    window.location.href = window.location.href.replace(/\?.+/,'');
   }
 
   if(scene !== 'lesson') {
