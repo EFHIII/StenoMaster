@@ -40,6 +40,28 @@ body {
   display: none;
 }
 
+.lessonLinkInfo {
+  display: inline-block;
+  text-align: Right;
+  color: grey;
+  width: 50%;
+  position: relative;
+  top: -0.3em;
+}
+
+.lessonLinkName {
+  display: inline-block;
+  width: 50%;
+  text-align: left;
+}
+
+.lessonLinkBest {
+  color: gold;
+  font-style: italic;
+  position: relative;
+  top: -0.3em;
+}
+
 .lessonLink {
   font-size: 2em;
   color: #47a;

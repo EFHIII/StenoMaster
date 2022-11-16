@@ -34,10 +34,11 @@ function changeScene(toScene) {
 }
 
 (new URL(window.location.href)).searchParams.forEach((value, name) => {
+  let lessonNames = lessons.map(a => a.name);
   switch(name) {
     case 'lesson':
-      if(lessons.indexOf(value) >= 0) {
-        onLesson = lessons.indexOf(value);
+      if(lessonNames.indexOf(value) >= 0) {
+        onLesson = lessonNames.indexOf(value);
         scene = 'lesson';
       }
       break;
@@ -66,25 +67,91 @@ function changeScene(toScene) {
 
 changeScene(scene);
 
+//cookies
+function setCookie(cname, cvalue, exdays) {
+  let d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  let expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while(c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if(c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+let lessonProgress = {};
+
+function saveCookie() {
+  let cookie = {
+    lessonProgress: lessonProgress,
+  };
+  //console.log(JSON.stringify(cookie));
+  setCookie("EFHIII_SM", JSON.stringify(cookie), 365 * 200);
+}
+
+function loadCookie() {
+  let cookie = getCookie("EFHIII_SM");
+  if(cookie) {
+    try {
+      cookie = JSON.parse(cookie);
+      for(let v in cookie) {
+        switch (v) {
+          case 'lessonProgress':
+            lessonProgress = cookie[v];
+            break;
+          default:
+            console.log(`${v} deprecated`);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+}
+loadCookie();
+
 let lessonList = document.getElementById('lessonList');
 
 function toLessonText(lesson) {
-  return lesson.slice(0,1).toUpperCase()+lesson.replace(/-/g,' ').slice(1);
+  return lesson.name.slice(0,1).toUpperCase()+lesson.name.replace(/-/g,' ').slice(1);
 }
 
 function updateLessonList() {
   lessonList.innerHTML = '';
   for(let lesson of lessons) {
-    lessonList.innerHTML += `<a class='lessonLink' href='?lesson=` +
-      lesson +
-      (
-        autoAdvance ?
-        (repetitions === 10 ? '' : '&repetitions=' + repetitions) +
-        (accuracyTarget === 96 ? '' : '&accuracy=' + accuracyTarget) +
-        (atAccuracy === 1? '' : '&atAccuracy=' + atAccuracy) :
-        '&auto-advance=false'
-      ) +
-      `'>${toLessonText(lesson)}</a><br>`;
+    let tried = lessonProgress.hasOwnProperty(lesson.name);
+    let completed = tried ? lessonProgress[lesson.name].completed : 0;
+    let repeated = completed >= lesson.repetitions;
+    let accurately = tried ? lessonProgress[lesson.name].accurateCompleted : 0;
+    lessonList.innerHTML +=
+      `<span class='lessonLinkInfo' ${repeated && accurately > 0 ? `style='color:green'` : ``}>`+
+      `${repeated ? `${accurately}` : `${completed}/${lesson.repetitions}`}`+
+      `&nbsp;</span><span class='lessonLinkName'>`+
+      `<a class='lessonLink' href='?lesson=` +
+        lesson.name +
+        (
+          autoAdvance ?
+          (repetitions === 10 ? '' : '&repetitions=' + repetitions) +
+          (accuracyTarget === 96 ? '' : '&accuracy=' + accuracyTarget) +
+          (atAccuracy === 1? '' : '&atAccuracy=' + atAccuracy) :
+          '&auto-advance=false'
+        ) +
+        `'>`+
+      `${toLessonText(lesson)}</a> `+
+      `${tried ? `<span class='lessonLinkBest'> ${lessonProgress[lesson.name].fastest} WPM</span>` : ''}`+
+      `</span><br>`;
   }
 }
 
@@ -122,9 +189,9 @@ document.getElementById('atAccuracy').addEventListener('change', (event) => {
 
 let text = document.getElementById('text');
 let keyboard = document.getElementById('keyboard');
-let accuracy = document.getElementById('accuracy');
-let wpm = document.getElementById('wpm');
-let progress = document.getElementById('progress');
+let accuracyDiv = document.getElementById('accuracy');
+let wpmDiv = document.getElementById('wpm');
+let progressDiv = document.getElementById('progress');
 
 let t = Date.now();
 
@@ -155,7 +222,24 @@ function getFile(file, callback) {
 }
 
 function updateProgressText() {
-  progress.innerHTML = autoAdvance ? `${toLessonText(lessons[onLesson])} <span style='color:white'>${progressStatus[0]}/${repetitions}</span> with <span style='color:white'>${progressStatus[1]}/${atAccuracy}</span> at ${accuracyTarget}%` : toLessonText(lessons[onLesson]);
+  if(!lessonProgress.hasOwnProperty(lessons[onLesson].name)) {
+    lessonProgress[lessons[onLesson].name] = {
+      completed: 0,
+      fastest: 0,
+      accurateCompleted: 0
+    };
+  }
+  progressDiv.innerHTML = autoAdvance ?
+    `${toLessonText(lessons[onLesson])} `+
+    (
+      lessons[onLesson].repetitions - lessonProgress[lessons[onLesson].name].completed > repetitions - progressStatus[0] ?
+      `<span style='color:white'>${lessonProgress[lessons[onLesson].name].completed}/${lessons[onLesson].repetitions}</span> ` :
+      `<span style='color:white'>${progressStatus[0]}/${repetitions}</span> `
+    ) +
+    `with <span style='color:white'>${progressStatus[1]}/${atAccuracy}</span>`+
+    ` at ${accuracyTarget}%`
+    :
+    toLessonText(lessons[onLesson]);
 }
 
 function loadLessonText(txt) {
@@ -195,7 +279,7 @@ function loadLessonText(txt) {
 
 function loadLesson(id) {
   onLesson = id % lessons.length;
-  getFile('lessons/' + lessons[onLesson] + '.txt', loadLessonText);
+  getFile('lessons/' + lessons[onLesson].name + '.txt', loadLessonText);
 }
 
 // #^STKPWHRAO*EUFRPBLGTSDZ
@@ -307,30 +391,54 @@ function drawtoLessonText() {
     }
   }
   text.innerHTML = textHTML;
-  document.getElementById(`lesson-${lessonPhrase}`).scrollIntoView({
-    behavior: 'smooth',
-    block: 'center'
-  });
+  let nextPhrase = document.getElementById(`lesson-${lessonPhrase}`);
+  if(nextPhrase){
+      nextPhrase.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
 }
 
 function updateStats() {
   let minutes = (Date.now() - startingTime) / 1000 / 60;
   let strokes = lessonStrokes.reduce((a, b) => a + b.length, 0);
-  accuracy.innerText = `${(((strokes - mistakes) / strokes * 1000) >> 0 ) / 10}%`;
-  wpm.innerText = `${((strokes / 2 / minutes * 10) >> 0) / 10} WPM`;
+  let accuracy = (((strokes - mistakes) / strokes * 1000) >> 0 ) / 10;
+  let wpm = ((strokes / 2 / minutes * 10) >> 0) / 10;
+  accuracyDiv.innerText = `${accuracy}%`;
+  wpmDiv.innerText = `${wpm} WPM`;
 
   progressStatus[0]++;
   if((strokes - mistakes) / strokes >= accuracyTarget / 100) {
     progressStatus[1]++;
   }
-  updateProgressText();
 
-  if(autoAdvance && progressStatus[0] >= repetitions && progressStatus[1] >= atAccuracy) {
+  if(lessonProgress.hasOwnProperty(lessons[onLesson].name)) {
+    lessonProgress[lessons[onLesson].name] = {
+      completed: lessonProgress[lessons[onLesson].name].completed + 1,
+      fastest: Math.max(lessonProgress[lessons[onLesson].name].fastest, wpm),
+      accurateCompleted: lessonProgress[lessons[onLesson].name].accurateCompleted +
+        ((strokes - mistakes) / strokes >= 0.96 ? 1 : 0)
+    };
+  }
+  else{
+    lessonProgress[lessons[onLesson].name] = {
+      completed: 1,
+      fastest: wpm,
+      accurateCompleted: (strokes - mistakes) / strokes >= 0.96
+    };
+  }
+
+  updateProgressText();
+  saveCookie();
+
+  if(autoAdvance && progressStatus[0] >= repetitions && progressStatus[1] >= atAccuracy &&
+    lessonProgress[lessons[onLesson].name].completed >= lessons[onLesson].repetitions) {
     onLesson++;
     progressStatus = [0, 0];
     setTimeout(_ => {
-      wpm.innerText = 'N/A';
-      accuracy.innerText = 'N/A';
+      wpmDiv.innerText = 'N/A';
+      accuracyDiv.innerText = 'N/A';
     }, 2000);
   }
 
@@ -377,6 +485,7 @@ function draw() {
     if(lessonStroke >= lessonStrokes[lessonPhrase].length) {
       lessonStroke = 0;
       lessonPhrase++;
+      drawtoLessonText();
       if(lessonPhrase >= lessonStrokes.length) {
         updateStats();
         mistakes = 0;
@@ -384,7 +493,6 @@ function draw() {
         lessonPhrase = 0;
       }
     }
-    drawtoLessonText();
   } else {
     mistakes++;
     displayStroke();
@@ -394,6 +502,10 @@ function draw() {
 }
 
 function keydown(event) {
+  if(event.key === 'Escape') {
+    window.location.href = '/';
+  }
+
   if(scene !== 'lesson') {
     return;
   }
