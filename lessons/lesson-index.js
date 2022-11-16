@@ -1,6 +1,6 @@
 let lessons = [
-  'lesson-1',
-  'lesson-2a',
-  'lesson-2b',
-  'lesson-2c',
+  {name: 'lesson-1', repetitions: 10},
+  {name: 'lesson-2a', repetitions: 10},
+  {name: 'lesson-2b', repetitions: 10},
+  {name: 'lesson-2c', repetitions: 10},
 ];
