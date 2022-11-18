@@ -4,6 +4,18 @@ body {
   font-family: "Fira Code";
 }
 
+/* problem words screen */
+
+#problems {
+  text-align: center;
+  font-size: 2em;
+}
+
+#problems div {
+  display: inline-block;
+  width: 50%;
+}
+
 /* lesson select screen */
 @media (min-width: 1200px) {
   #settings {
@@ -11,6 +23,16 @@ body {
     position: fixed;
     left: 0;
   }
+  .otherLink {
+    text-align: right;
+    position: fixed;
+    right: 0;
+  }
+}
+
+#lessonSelect div, #lessonSelect a {
+  padding: 0.5em;
+  padding-top: 0;
 }
 
 #lessonSelect {

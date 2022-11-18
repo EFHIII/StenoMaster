@@ -11,16 +11,21 @@ let lessonStrokes = [];
 let lessonPhrase = 0;
 let lessonStroke = 0;
 let mistakes = 0;
+let problemWords = {};
 
 let sceneDivs = {
   lesson: document.getElementById('lesson'),
   lessonSelect: document.getElementById('lessonSelect'),
+  problems: document.getElementById('problems'),
 };
 
 function changeScene(toScene) {
   switch(toScene) {
     case 'lesson':
       loadLesson(onLesson);
+      break;
+    case 'problems':
+      loadProblems();
       break;
   }
   for(let div in sceneDivs) {
@@ -36,6 +41,11 @@ function changeScene(toScene) {
 (new URL(window.location.href)).searchParams.forEach((value, name) => {
   let lessonNames = lessons.map(a => a.name);
   switch(name) {
+    case 'problems':
+      if(lessonNames.indexOf(value)) {
+        scene = 'problems';
+      }
+      break;
     case 'lesson':
       if(lessonNames.indexOf(value) >= 0) {
         onLesson = lessonNames.indexOf(value);
@@ -93,9 +103,23 @@ function getCookie(cname) {
 
 let lessonProgress = {};
 
+function logWord(word, mistake) {
+  if(!problemWords.hasOwnProperty(word[0])) {
+    // [mistakes, total]
+    problemWords[word[0]] = [0, 0, word[1]];
+  }
+  if(mistake) {
+    problemWords[word[0]][0]++;
+  }
+  else {
+    problemWords[word[0]][1]++;
+  }
+}
+
 function saveCookie() {
   let cookie = {
     lessonProgress: lessonProgress,
+    problemWords: problemWords,
   };
   //console.log(JSON.stringify(cookie));
   setCookie("EFHIII_SM", JSON.stringify(cookie), 365 * 200);
@@ -110,6 +134,12 @@ function loadCookie() {
         switch (v) {
           case 'lessonProgress':
             lessonProgress = cookie[v];
+            break;
+          case 'problemWords':
+            problemWords = cookie[v];
+            if(scene == 'problems') {
+              loadProblems();
+            }
             break;
           default:
             console.log(`${v} deprecated`);
@@ -153,6 +183,41 @@ function updateLessonList() {
       `${tried ? `<span class='lessonLinkBest'> ${lessonProgress[lesson.name].fastest} WPM</span>` : ''}`+
       `</span><br>`;
   }
+}
+
+function loadProblems() {
+  let txt = '<div>Problem Words</div><br>';
+  let total = 0;
+  let bad = [];
+  for(let word in problemWords) {
+    let accuracy = 1 - problemWords[word][0] / problemWords[word][1];
+    if(accuracy < 0.98) {
+      let acTemp = accuracy;
+      let color = 'green';
+      if(accuracy < 0.7) {
+        color = 'Crimson';
+      }
+      else if(accuracy < 0.8) {
+        color = 'DarkOrange';
+      }
+      else if(accuracy < 0.9) {
+        color = 'OliveDrab';
+      }
+      accuracy = (accuracy * 1000 >> 0) / 10;
+      bad.push([acTemp, `<div style='text-align:right;'><span style='color: ${color}'>${accuracy}% </span><span style='width: 50%;display:inline-block;'>${word}&nbsp;</span></div><div style='text-align:left;'>&nbsp;/${problemWords[word][2].join('/').replace(/\^/g,'S')}</div>`]);
+      total++;
+    }
+  }
+  if(total == 0) {
+    txt = `<div>No problem words</div>`;
+  }
+  else {
+    bad = bad.sort((a, b) => a[0] - b[0]);
+    for(let word of bad) {
+      txt += word[1];
+    }
+  }
+  sceneDivs.problems.innerHTML = txt;
 }
 
 updateLessonList();
@@ -200,6 +265,7 @@ let willDraw = false;
 
 let startingTime = 0;
 let progressStatus = [0, 0];
+let recentMistake = false;
 
 function getFile(file, callback) {
   var xmlhttp = new XMLHttpRequest();
@@ -273,6 +339,7 @@ function loadLessonText(txt) {
   lessonPhrase = 0;
   lessonStroke = 0;
   mistakes = 0;
+  recentMistake = false;
   updateProgressText();
   drawtoLessonText();
 }
@@ -416,7 +483,7 @@ function updateStats() {
   if(lessonProgress.hasOwnProperty(lessons[onLesson].name)) {
     lessonProgress[lessons[onLesson].name] = {
       completed: lessonProgress[lessons[onLesson].name].completed + 1,
-      fastest: Math.max(lessonProgress[lessons[onLesson].name].fastest, wpm),
+      fastest: (strokes - mistakes) / strokes >= 0.96 ? Math.max(lessonProgress[lessons[onLesson].name].fastest, wpm) : lessonProgress[lessons[onLesson].name].fastest,
       accurateCompleted: lessonProgress[lessons[onLesson].name].accurateCompleted +
         ((strokes - mistakes) / strokes >= 0.96 ? 1 : 0)
     };
@@ -457,6 +524,7 @@ function displayStroke() {
 }
 
 function hideStroke() {
+  recentMistake = false;
   for(let key in shortToLongSteno('')) {
     let keys = document.getElementsByClassName('steno' + key);
     for(let div of keys) {
@@ -483,6 +551,10 @@ function draw() {
     }
     lessonStroke++;
     if(lessonStroke >= lessonStrokes[lessonPhrase].length) {
+      logWord([
+        lessonText[lessonPhrase],
+        lessonStrokes[lessonPhrase]
+      ]);
       lessonStroke = 0;
       lessonPhrase++;
       drawtoLessonText();
@@ -493,9 +565,14 @@ function draw() {
         lessonPhrase = 0;
       }
     }
-  } else {
+  } else if(!recentMistake) {
     mistakes++;
+    recentMistake = true;
     displayStroke();
+    logWord([
+      lessonText[lessonPhrase],
+      lessonStrokes[lessonPhrase]
+    ], true);
   }
 
   txt = '';

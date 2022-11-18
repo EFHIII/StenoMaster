@@ -14,20 +14,22 @@
     <div class="scene">
       <p>A stenography practice program for the RWG (Robert/Walsh/Gonzalez) theory compatible with any stenotype using Plover.</p>
     </div>
+    <div class = "scene" id="problems"></div>
     <div id="lessonSelect" class="scene">
-    <div id="settings">
-      <input type="checkbox" name="auto-advance" checked="true" id="autoAdvance">
-      <label for="auto-advance">Auto advance lessons</label><br>
-      <div id="autoAdvanceSettings">
-        <input type="number" name="repetitions" value="10" min="1" max="100" id="repetitions">
-        <label for="repetitions">repetitions with</label><br>
-        <input type="number" name="accuracy" value="1" min="1" max="100" id="atAccuracy">
-        <label for="accuracy">at</label><br>
-        <input type="number" name="accuracy" value="96" min="96" max="100" id="accuracyTarget">
-        <label for="accuracy">% accuracy</label>
-    </div>
-    </div>
-    <div id="lessonList"></div>
+      <div id="settings">
+        <input type="checkbox" name="auto-advance" checked="true" id="autoAdvance">
+        <label for="auto-advance">Auto advance lessons</label><br>
+        <div id="autoAdvanceSettings">
+          <input type="number" name="repetitions" value="10" min="1" max="100" id="repetitions">
+          <label for="repetitions">repetitions with</label><br>
+          <input type="number" name="accuracy" value="1" min="1" max="100" id="atAccuracy">
+          <label for="accuracy">at</label><br>
+          <input type="number" name="accuracy" value="96" min="96" max="100" id="accuracyTarget">
+          <label for="accuracy">% accuracy</label>
+        </div>
+      </div>
+      <a class="otherLink lessonLink" href="?problems=true">Problem words</a>
+      <div id="lessonList"></div>
     </div>
     <div id="lesson" class="scene">
       <div id="text"></div>
