@@ -4,6 +4,64 @@ body {
   font-family: "Fira Code";
 }
 
+/* filedrop */
+
+#filedrop {
+  position: relative;
+  left: 0;
+  width: 75%;
+  height: 100px;
+  border: 2px dashed white;
+  margin: 20px auto;
+}
+
+#filedrop.Hover {
+  background-color: #246;
+  color: white;
+}
+
+#filedrop input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  left: 0px;
+  top: 0px;
+}
+
+#filedrop #filetext {
+  position: absolute;
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  left: 0px;
+  top: 50%;
+  transform: translate(-0.5em, -50%);
+  text-align: center;
+}
+
+#filetext {
+  margin-right: 3em;
+}
+
+@media (max-width: 1200px) {
+  #filedrop {
+    position: fixed;
+    background-color: black;
+    z-index: 1;
+    width: 15%;
+    left: 0;
+    bottom: 0;
+    min-height: 20vh;
+  }
+}
+
+@media (max-width: 725px) {
+  #filedrop #filetext {
+    transform: translate(-0.5em, -100%);
+  }
+}
+
 /* problem words screen */
 
 #problems {

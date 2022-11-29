@@ -599,3 +599,186 @@ function keydown(event) {
 }
 
 document.addEventListener('keydown', keydown);
+
+// Read file
+if(!(window.File && window.FileReader && window.FileList && window.Blob)) {
+  document.getElementById('filetext').textContent = "Reading files not supported by this browser";
+} else {
+  const fileDrop = document.getElementById("filedrop")
+  fileDrop.addEventListener("dragenter", () => fileDrop.classList.add("Hover"))
+  fileDrop.addEventListener("dragleave", () => fileDrop.classList.remove("Hover"))
+  fileDrop.addEventListener("drop", () => fileDrop.classList.remove("Hover"))
+  document.getElementById("filedrop").addEventListener("change", e => {
+    //get the files
+    const files = e.target.files
+    if(files.length > 0) {
+      const file = files[0]
+      document.getElementById('filetext').textContent = file.name
+      parseFile(file)
+    }
+  })
+}
+
+function parseFile(file) {
+  //read the file
+  const reader = new FileReader()
+  reader.onload = function(e) {
+    lessons.unshift({
+      name: file.name.replace(/\..+/,''),
+      repetitions: 10
+    });
+    if(e.target.result.indexOf('\x00') > 0) {
+      readSMFile(e.target.result);
+    }
+    else {
+      readEFHFile(e.target.result);
+    }
+  }
+  reader.readAsText(file);
+}
+
+function LongToShortSteno(str) {
+  let ans = '';
+
+  if(str['#']) ans += '#';
+  if(str['^']) ans += '^';
+  if(str['S']) ans += 'S';
+  if(str['T']) ans += 'T';
+  if(str['K']) ans += 'K';
+  if(str['P']) ans += 'P';
+  if(str['W']) ans += 'W';
+  if(str['H']) ans += 'H';
+  if(str['R']) ans += 'R';
+  if(str['A']) ans += 'A';
+  if(str['O']) ans += 'O';
+  if(!str['A'] && !str['O'] && !str['E'] && !str['U']) ans += '-';
+  if(str['E']) ans += 'E';
+  if(str['U']) ans += 'U';
+  if(str['-F']) ans += 'F';
+  if(str['-R']) ans += 'R';
+  if(str['-P']) ans += 'P';
+  if(str['-B']) ans += 'B';
+  if(str['-L']) ans += 'L';
+  if(str['-G']) ans += 'G';
+  if(str['-T']) ans += 'T';
+  if(str['-S']) ans += 'S';
+  if(str['-D']) ans += 'D';
+  if(str['-Z']) ans += 'Z';
+
+  if(ans[ans.length - 1] == '-') {
+    ans = ans.replace('-','');
+  }
+
+  return ans;
+}
+
+function MasterToLongSteno(word) {
+  let ans = {
+    '#': false,
+    '^': false,
+    'S': false,
+    'T': false,
+    'K': false,
+    'P': false,
+    'W': false,
+    'H': false,
+    'R': false,
+    'A': false,
+    'O': false,
+    '*': false,
+    'E': false,
+    'U': false,
+    '-F': false,
+    '-R': false,
+    '-P': false,
+    '-B': false,
+    '-L': false,
+    '-G': false,
+    '-T': false,
+    '-S': false,
+    '-D': false,
+    '-Z': false,
+  };
+
+  let conversion = {
+    's': 'S',
+    't': 'T',
+    'K': 'K',
+    'p': 'P',
+    'W': 'W',
+    'H': 'H',
+    'r': 'R',
+    'A': 'A',
+    'O': 'O',
+    '*': '*',
+    'E': 'E',
+    'U': 'U',
+    'F': '-F',
+    'R': '-R',
+    'P': '-P',
+    'B': '-B',
+    'L': '-L',
+    'G': '-G',
+    'T': '-T',
+    'S': '-S',
+    'D': '-D',
+    'Z': '-Z',
+  };
+
+  for(let char of word) {
+    if(!conversion.hasOwnProperty(char)) {
+      throw(`error\nin ${word}\n${char} not convertable`);
+    }
+    ans[conversion[char]] = true;
+  }
+
+  return ans;
+}
+
+function toPlover(word) {
+  return LongToShortSteno(MasterToLongSteno(word));
+}
+
+function readSMFile(file) {
+  let f = file;
+  f = f.replace(/\r/g,'');
+  f = f.replace(/SAL/g,'TEST');
+  f = f.replace(/STPH/g,'^TPH');
+  f = f.replace(/1/g,'#^');
+  f = f.split('\n');
+
+  let out = '';
+
+  for(let line of f) {
+    let txt = line.trim().split('\x00');
+    if(txt == '') continue;
+    while(txt[txt.length - 1] == '') {
+      txt.pop();
+    }
+
+    out += txt.shift();
+    out += '\n';
+    for(let word in txt) {
+      txt[word] = toPlover(txt[word]);
+    }
+    out += ' '+txt.join(' ');
+    out += '\n';
+  }
+
+  readEFHFile(out);
+}
+
+function readEFHFile(file) {
+  autoAdvance = false;
+  document.getElementById('autoAdvance').checked = false;
+
+  scene = 'lesson';
+  for(let div in sceneDivs) {
+    if(div == scene) {
+      sceneDivs[div].style.display = 'block';
+      continue;
+    }
+    sceneDivs[div].style.display = 'none';
+  }
+  loadLessonText(file);
+}
