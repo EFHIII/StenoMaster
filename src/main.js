@@ -1,3 +1,17 @@
+/* TODO:
+
+auto-generate pyramid drills
+
+from problem words, randomly choose N words (default: 10)
+
+chance of being chosen: m = mistakes, t = total
+weighted value:
+(m + 10) / (t - m / 2 + 1)
+*/
+
+let cookieName = 'EFHIII_SM';
+let version = 1;
+
 let autoAdvance = true;
 let onLesson = 0;
 let scene = 'lessonSelect';
@@ -104,6 +118,23 @@ function getCookie(cname) {
 let lessonProgress = {};
 
 function logWord(word, mistake) {
+  let simpler = word[0].toLowerCase().replace(/<\/?[uib]>/g,'');
+  if(simpler !== word[0] &&
+    problemWords.hasOwnProperty(simpler) &&
+    word[1].join('/') === problemWords[simpler][2].join('/')) {
+    if(mistake) {
+      problemWords[simpler][0]++;
+    }
+    else {
+      problemWords[simpler][1]++;
+    }
+    if(problemWords.hasOwnProperty(word[0])) {
+      problemWords[simpler][0] += problemWords[word[0]][0];
+      problemWords[simpler][1] += problemWords[word[0]][1];
+      delete problemWords[word[0]];
+    }
+    return;
+  }
   if(!problemWords.hasOwnProperty(word[0])) {
     // [mistakes, total]
     problemWords[word[0]] = [0, 0, word[1]];
@@ -120,18 +151,23 @@ function saveCookie() {
   let cookie = {
     lessonProgress: lessonProgress,
     problemWords: problemWords,
+    version: version,
   };
   //console.log(JSON.stringify(cookie));
-  setCookie("EFHIII_SM", JSON.stringify(cookie), 365 * 200);
+  setCookie(cookieName, JSON.stringify(cookie), 365 * 200);
 }
 
 function loadCookie() {
-  let cookie = getCookie("EFHIII_SM");
+  let cookie = getCookie(cookieName);
   if(cookie) {
     try {
       cookie = JSON.parse(cookie);
+      let cookieVersion = 0;
       for(let v in cookie) {
         switch (v) {
+          case 'version':
+            cookieVersion = cookie[v];
+            break;
           case 'lessonProgress':
             lessonProgress = cookie[v];
             break;
@@ -144,6 +180,11 @@ function loadCookie() {
           default:
             console.log(`${v} deprecated`);
         }
+      }
+      if(cookieVersion < version) {
+        problemWords = {};
+        lessonProgress = {};
+        problemWords = {};
       }
     } catch (e) {
       console.error(e);
@@ -204,7 +245,7 @@ function loadProblems() {
         color = 'OliveDrab';
       }
       accuracy = (accuracy * 1000 >> 0) / 10;
-      bad.push([acTemp, `<div style='text-align:right;'><span style='color: ${color}'>${accuracy}% </span><span style='width: 50%;display:inline-block;'>${word}&nbsp;</span></div><div style='text-align:left;'>&nbsp;/${problemWords[word][2].join('/').replace(/\^/g,'S')}</div>`]);
+      bad.push([acTemp, `<div style='text-align:right;'><span style='color: ${color}'>${accuracy}% </span><span style='width: 50%;display:inline-block;'>${word.slice(1)}&nbsp;</span></div><div style='text-align:left;'>&nbsp;/${problemWords[word][2].join('/').replace(/\^/g,'S')}</div>`]);
       total++;
     }
   }
@@ -313,28 +354,91 @@ function loadLessonText(txt) {
   lessonStrokes = [];
   let lines = txt.split('\n');
   for(let i = 0; i < lines.length - 1; i += 2) {
-    // underline
-    let regex = new RegExp('(?:\\s|^)_[a-zA-Z0-9][a-zA-Z0-9 ]+[a-zA-Z0-9]_(?:\\s|$)','g');
+    let regex = new RegExp('_.+?_','g');
     let line = lines[i].replace(/\r/g, '');
+    line = line.replace(/([^\/])\//g, '$1\x00');
+    line = line.replace(/\/\//g, '/');
+
+    // underline
     let matches = line.match(regex) || [];
     for(let match of matches) {
       line = line.replace(match, match.replace('_','<u>').replace('_','</u>'));
     }
     // bold
-    regex = new RegExp('(?:\\s|^)\\*\\*[a-zA-Z0-9][a-zA-Z0-9 ]+[a-zA-Z0-9]\\*\\*(?:\\s|$)','g');
+    regex = new RegExp('\\*\\*.+?\\*\\*','g');
     matches = line.match(regex) || [];
     for(let match of matches) {
       line = line.replace(match, match.replace('**','<b>').replace('**','</b>'));
     }
     // italic
-    regex = new RegExp('(?:\\s|^)\\*[a-zA-Z0-9][a-zA-Z0-9 ]+[a-zA-Z0-9]\\*(?:\\s|$)','g');
+    regex = new RegExp('\\*.+?\\*','g');
     matches = line.match(regex) || [];
     for(let match of matches) {
       line = line.replace(match, match.replace('*','<i>').replace('*','</i>'));
     }
 
-    lessonText.push(line);
-    lessonStrokes.push(lines[i + 1].replace(/\r/g, '').split(' ').slice(1));
+    let steno = lines[i + 1].replace(/\r/g, '').split(' ');
+
+    while(steno.length > 0 && steno[0].length === 0) {
+      steno.shift();
+    }
+
+    let strokes = lines[i + 1].replace(/[\r\/]/g, '').replace(/^\s+/, '');
+
+    let hadStart = false;
+    let startStrokes = ['OEUS', 'OEU', 'AE'];
+
+    let done = false;
+    while(!done) {
+      done = true;
+      for(let stroke of startStrokes) {
+        let index = strokes.indexOf(stroke + ' ');
+        if(index === 0) {
+            lessonText.push((hadStart ? '/' : ' ') + line[0]);
+            lessonStrokes.push(strokes.slice(0, index + stroke.length).split(' '));
+            line = line.slice(1);
+            strokes = strokes.slice(stroke.length + 1);
+            done = false;
+            hadStart = true;
+            break;
+        }
+      }
+    }
+
+    let stopStrokes = ['OEUS OEUS', 'OEU OEU', '-FPLT -FPLT', '-FPLT RBGS', '-FPLT', 'STPH', '-RBGS'];
+
+    let pushAfter = [];
+
+    done = false;
+    while(!done) {
+      done = true;
+      for(let stroke of stopStrokes) {
+        let index = strokes.indexOf(' ' + stroke);
+        if(index > 0 && index + stroke.length + 1 === strokes.length) {
+          pushAfter.unshift([line[line.length - 1], strokes.slice(index + 1)]);
+          line = line.slice(0, line.length - 1);
+          strokes = strokes.slice(0, index);
+          done = false;
+          break;
+        }
+      }
+    }
+
+    if(steno[0][0] === '/') {
+      hadStart = true;
+    }
+
+    if(/\w'\w/.test(line) && strokes.split(' ').length === 2) {
+      line = line.replace(/(\w)'(\w)/, "$1\x00'$2");
+    }
+
+    lessonText.push((hadStart ? '/' : ' ') + line);
+    lessonStrokes.push(strokes.split(' '));
+
+    for(let i = 0; i < pushAfter.length; i++) {
+      lessonText.push('/' + pushAfter[i][0]);
+      lessonStrokes.push(pushAfter[i][1].split(' '));
+    }
   }
   lessonPhrase = 0;
   lessonStroke = 0;
@@ -451,11 +555,34 @@ function escapeHtml(unsafe) {
 
 function drawtoLessonText() {
   let textHTML = '';
+  let open = false;
   for(let i = 0; i < lessonText.length; i++) {
-    textHTML += `<span class='phrase${lessonPhrase>i?' typed':''}' id = 'lesson-${i}'>${escapeHtml(lessonText[i])}</span>`;
-    if(i < lessonText.length - 1) {
-      textHTML += `<span class='${lessonPhrase>i+1?'typed':''}'> </span>`;
+    if(!open && i < lessonText.length - 1 && lessonText[i + 1][0] === '/') {
+      textHTML += `<span class='phrase'>`;
+      open = true;
     }
+
+    if(lessonPhrase === i && lessonStroke > 0 && lessonText[i].indexOf('\x00') > 0) {
+      let wordParts = lessonText[i].slice(1).split('\x00');
+      textHTML += `<span id='lesson-${i}'>`;
+      for(let part = 0; part < wordParts.length; part++) {
+        textHTML += `<span class='phrase${lessonStroke > part ? ' typed' : ''}'>${escapeHtml(wordParts[part])}</span>`;
+      }
+      textHTML += `</span>`;
+    }
+    else {
+      textHTML += `<span class='phrase${lessonPhrase > i ? ' typed' : ''}' id = 'lesson-${i}'>${escapeHtml(lessonText[i].replace(/\x00/g, '').slice(1))}</span>`;
+    }
+    if(open && i < lessonText.length - 1 && lessonText[i + 1][0] === ' ') {
+      textHTML += `</span>`;
+      open = false;
+    }
+    if(i < lessonText.length - 1 && lessonText[i + 1][0] === ' ') {
+      textHTML += `<span class='${lessonPhrase > i + 1 ? 'typed' : ''}'> </span>`;
+    }
+  }
+  if(open) {
+    textHTML += `</span>`;
   }
   text.innerHTML = textHTML;
   let nextPhrase = document.getElementById(`lesson-${lessonPhrase}`);
@@ -564,6 +691,9 @@ function draw() {
         lessonStroke = 0;
         lessonPhrase = 0;
       }
+    }
+    else {
+      drawtoLessonText();
     }
   } else if(!recentMistake) {
     mistakes++;
