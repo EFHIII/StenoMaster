@@ -10,7 +10,7 @@ weighted value:
 */
 
 let cookieName = 'EFHIII_SM';
-let version = 1;
+let version = 0.2;
 
 let autoAdvance = true;
 let onLesson = 0;
@@ -27,11 +27,30 @@ let lessonStroke = 0;
 let mistakes = 0;
 let problemWords = {};
 
+let t = Date.now();
+
+let txt = '';
+let willDraw = false;
+
+let startingTime = 0;
+let progressStatus = [0, 0];
+let recentMistake = false;
+
+let text = document.getElementById('text');
+let keyboard = document.getElementById('keyboard');
+let accuracyDiv = document.getElementById('accuracy');
+let wpmDiv = document.getElementById('wpm');
+let progressDiv = document.getElementById('progress');
+
 let sceneDivs = {
   lesson: document.getElementById('lesson'),
+  pyramid: document.getElementById('lesson'),
   lessonSelect: document.getElementById('lessonSelect'),
   problems: document.getElementById('problems'),
 };
+
+let pyramidWords;
+let pyramidWordsDone;
 
 function changeScene(toScene) {
   switch(toScene) {
@@ -41,13 +60,19 @@ function changeScene(toScene) {
     case 'problems':
       loadProblems();
       break;
+    case 'pyramid':
+      generatePyramid();
+      break;
   }
   for(let div in sceneDivs) {
-    if(div == toScene) {
-      sceneDivs[div].style.display = 'block';
-      continue;
+    if(div !== toScene) {
+      sceneDivs[div].style.display = 'none';
     }
-    sceneDivs[div].style.display = 'none';
+  }
+  for(let div in sceneDivs) {
+    if(div === toScene) {
+      sceneDivs[div].style.display = 'block';
+    }
   }
   scene = toScene;
 }
@@ -56,8 +81,13 @@ function changeScene(toScene) {
   let lessonNames = lessons.map(a => a.name);
   switch(name) {
     case 'problems':
-      if(lessonNames.indexOf(value)) {
+      if(value.toLowerCase() === 'true') {
         scene = 'problems';
+      }
+      break;
+    case 'pyramid':
+      if(value.toLowerCase() === 'true') {
+        scene = 'pyramid';
       }
       break;
     case 'lesson':
@@ -67,7 +97,7 @@ function changeScene(toScene) {
       }
       break;
     case 'auto-advance':
-      if(value.toLowerCase() == 'false') {
+      if(value.toLowerCase() === 'false') {
         autoAdvance = false;
       }
       break;
@@ -88,8 +118,6 @@ function changeScene(toScene) {
       break;
   }
 });
-
-changeScene(scene);
 
 //cookies
 function setCookie(cname, cvalue, exdays) {
@@ -117,8 +145,10 @@ function getCookie(cname) {
 
 let lessonProgress = {};
 
-function logWord(word, mistake) {
-  let simpler = word[0].toLowerCase().replace(/<\/?[uib]>/g,'');
+function logWord(wordA, mistake) {
+  let word = [wordA[0].slice(1).replace(/<\/?u>/g,''), wordA[1]];
+  if(!/\w/.test(word)) return;
+  let simpler = word[0].toLowerCase().replace(/<\/?[ib]>/g,'');
   if(simpler !== word[0] &&
     problemWords.hasOwnProperty(simpler) &&
     word[1].join('/') === problemWords[simpler][2].join('/')) {
@@ -181,7 +211,7 @@ function loadCookie() {
             console.log(`${v} deprecated`);
         }
       }
-      if(cookieVersion < version) {
+      if(cookieVersion !== version) {
         problemWords = {};
         lessonProgress = {};
         problemWords = {};
@@ -192,6 +222,7 @@ function loadCookie() {
   }
 }
 loadCookie();
+changeScene(scene);
 
 let lessonList = document.getElementById('lessonList');
 
@@ -227,7 +258,8 @@ function updateLessonList() {
 }
 
 function loadProblems() {
-  let txt = '<div>Problem Words</div><br>';
+  let txt = `<div class="customLinks"><a href="?pyramid=true">Pyramid Drill</a><br>` +
+  `Problem Words</div><br>`;
   let total = 0;
   let bad = [];
   for(let word in problemWords) {
@@ -245,7 +277,7 @@ function loadProblems() {
         color = 'OliveDrab';
       }
       accuracy = (accuracy * 1000 >> 0) / 10;
-      bad.push([acTemp, `<div style='text-align:right;'><span style='color: ${color}'>${accuracy}% </span><span style='width: 50%;display:inline-block;'>${word.slice(1)}&nbsp;</span></div><div style='text-align:left;'>&nbsp;/${problemWords[word][2].join('/').replace(/\^/g,'S')}</div>`]);
+      bad.push([acTemp, `<div style='text-align:right;'><span style='color: ${color}'>${accuracy}% </span><span style='width: 50%;display:inline-block;'>${word}&nbsp;</span></div><div style='text-align:left;'>&nbsp;/${problemWords[word][2].join('/').replace(/\^/g,'S')}</div>`]);
       total++;
     }
   }
@@ -292,21 +324,6 @@ document.getElementById('atAccuracy').addEventListener('change', (event) => {
     updateLessonList();
   }
 });
-
-let text = document.getElementById('text');
-let keyboard = document.getElementById('keyboard');
-let accuracyDiv = document.getElementById('accuracy');
-let wpmDiv = document.getElementById('wpm');
-let progressDiv = document.getElementById('progress');
-
-let t = Date.now();
-
-let txt = '';
-let willDraw = false;
-
-let startingTime = 0;
-let progressStatus = [0, 0];
-let recentMistake = false;
 
 function getFile(file, callback) {
   var xmlhttp = new XMLHttpRequest();
@@ -598,7 +615,11 @@ function updateStats() {
   let minutes = (Date.now() - startingTime) / 1000 / 60;
   let strokes = lessonStrokes.reduce((a, b) => a + b.length, 0);
   let accuracy = (((strokes - mistakes) / strokes * 1000) >> 0 ) / 10;
-  let wpm = ((strokes / 2 / minutes * 10) >> 0) / 10;
+
+  // word = two strokes
+  //let wpm = ((strokes / 2 / minutes * 10) >> 0) / 10;
+  // word = txt with alpha/num
+  let wpm = (lessonText.filter(a => /[\w\d]/.test(a)).reduce((a, b) => a + b.slice(1).split(' ').length, 0) / minutes * 10 >> 0) / 10;
   accuracyDiv.innerText = `${accuracy}%`;
   wpmDiv.innerText = `${wpm} WPM`;
 
@@ -607,13 +628,17 @@ function updateStats() {
     progressStatus[1]++;
   }
 
-  if(lessonProgress.hasOwnProperty(lessons[onLesson].name)) {
+  if(pyramidWords) {
+    continuePyramid();
+  }
+  else if(lessonProgress.hasOwnProperty(lessons[onLesson].name)) {
     lessonProgress[lessons[onLesson].name] = {
       completed: lessonProgress[lessons[onLesson].name].completed + 1,
       fastest: (strokes - mistakes) / strokes >= 0.96 ? Math.max(lessonProgress[lessons[onLesson].name].fastest, wpm) : lessonProgress[lessons[onLesson].name].fastest,
       accurateCompleted: lessonProgress[lessons[onLesson].name].accurateCompleted +
         ((strokes - mistakes) / strokes >= 0.96 ? 1 : 0)
     };
+    updateProgressText();
   }
   else{
     lessonProgress[lessons[onLesson].name] = {
@@ -621,9 +646,9 @@ function updateStats() {
       fastest: wpm,
       accurateCompleted: (strokes - mistakes) / strokes >= 0.96
     };
+    updateProgressText();
   }
 
-  updateProgressText();
   saveCookie();
 
   if(autoAdvance && progressStatus[0] >= repetitions && progressStatus[1] >= atAccuracy &&
@@ -636,7 +661,9 @@ function updateStats() {
     }, 2000);
   }
 
-  setTimeout(_ => loadLesson(onLesson), 2000);
+  if(!pyramidWords) {
+    setTimeout(_ => loadLesson(onLesson), 2000);
+  }
 }
 
 function displayStroke() {
@@ -660,8 +687,8 @@ function hideStroke() {
   }
 }
 
-function draw() {
-  if(Date.now() - t < 12) {
+function draw(skip) {
+  if(skip !== 'skip' && Date.now() - t < 9) {
     window.requestAnimationFrame(draw);
     return;
   }
@@ -671,9 +698,9 @@ function draw() {
     return;
   }
 
-  if(txt.slice(1) == lessonStrokes[lessonPhrase][lessonStroke].replace('^', 'S')) {
+  if(txt.slice(1) === lessonStrokes[lessonPhrase][lessonStroke].replace('^', 'S')) {
     hideStroke();
-    if(lessonPhrase == 0 && lessonStroke == 0) {
+    if(lessonPhrase === 0 && lessonStroke === 0) {
       startingTime = Date.now();
     }
     lessonStroke++;
@@ -710,11 +737,15 @@ function draw() {
 
 function keydown(event) {
   if(event.key === 'Escape') {
-    window.location.href = window.location.href.replace(/\?.+/,'');
+    setTimeout(_ => window.location.href = window.location.href.replace(/\?.+/,''), 0);
+    return;
+  }
+  if(scene !== 'lesson' && scene !== 'pyramid') {
+    return;
   }
 
-  if(scene !== 'lesson') {
-    return;
+  if(willDraw && event.key === ' ') {
+    draw('skip');
   }
 
   if(event.key !== 'Shift') {
@@ -747,6 +778,70 @@ if(!(window.File && window.FileReader && window.FileList && window.Blob)) {
       parseFile(file)
     }
   })
+}
+
+function continuePyramid() {
+  pyramidWordsDone++;
+
+  if(pyramidWordsDone > pyramidWords[0].length) {
+    generatePyramid();
+    return;
+  }
+
+  progressDiv.innerHTML = `Pyramid <span style='color:white'>${pyramidWordsDone}</span> word${pyramidWordsDone > 1 ? 's' : ''}`;
+
+  //text.style.textAlign = 'center';
+
+  lessonText = pyramidWords[0].slice(0, pyramidWordsDone);
+  lessonStrokes = pyramidWords[1].slice(0, pyramidWordsDone);
+
+  lessonPhrase = 0;
+  lessonStroke = 0;
+  mistakes = 0;
+  recentMistake = false
+  autoAdvance = false;
+  drawtoLessonText();
+}
+
+function generatePyramid() {
+  let words = Object.keys(problemWords).filter(a => /[\w\d]/.test(a));
+  if(words.length === 0) {
+    setTimeout(_ => changeScene('lessonSelect'), 0);
+    return;
+  }
+
+  words = words.map(a => {
+    return [a, (problemWords[a][0] + 10) / Math.max(1, problemWords[a][1])];
+  });
+  let sumWeight = words.reduce((a, b) => a + b[1], 0);
+  let myPyramid = [];
+  let myPyramidSteno = [];
+
+  while(words.length > 0) {
+    let val = Math.random() * sumWeight;
+    let at = 0;
+    for(let i = 0; i < words.length; i++) {
+      at += words[i][1];
+      if(at > val) {
+        myPyramid.push(words[i][0]);
+        myPyramidSteno.push(problemWords[words[i][0]][2]);
+        sumWeight -= words[i][1];
+        words.splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  myPyramid = myPyramid.map(a => {
+    if(/ /.test(a)) {
+      return ' <u>' + a + '</u>';
+    }
+    return ' ' + a;
+  })
+
+  pyramidWords = [myPyramid, myPyramidSteno];
+  pyramidWordsDone = 0;
+  continuePyramid();
 }
 
 function parseFile(file) {

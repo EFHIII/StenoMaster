@@ -4,6 +4,17 @@ body {
   font-family: "Fira Code";
 }
 
+/* custom links */
+.customLinks {
+  display: block !important;
+  text-align: center;
+  width: 100% !important;
+}
+
+.customLinks div {
+  width: 100%;
+}
+
 /* filedrop */
 
 #filedrop {
@@ -101,7 +112,7 @@ body {
   font-size: 2em;
 }
 
-#lessonSelect input[type=checkbox] {
+input[type=checkbox] {
   position: relative;
   top: 0.5em;
   width: 3em;
@@ -110,6 +121,10 @@ body {
 
 #lessonSelect input[type=number] {
   font-size: 2em;
+}
+
+input[type=number] {
+  font-size: 1em;
   width: 2em;
   color: white;
   background-color: #333;
@@ -142,13 +157,16 @@ body {
   top: -0.3em;
 }
 
-.lessonLink {
-  font-size: 2em;
+a {
   color: #47a;
   text-decoration: none;
 }
 
-.lessonLink:hover {
+.lessonLink {
+  font-size: 2em;
+}
+
+a:hover {
   text-decoration: underline;
 }
 
