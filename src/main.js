@@ -1,12 +1,8 @@
 /* TODO:
 
-auto-generate pyramid drills
-
-from problem words, randomly choose N words (default: 10)
-
-chance of being chosen: m = mistakes, t = total
-weighted value:
-(m + 10) / (t - m / 2 + 1)
+filter problem words by
+outline search / word search
+toggle problem words for pyramid drill
 */
 
 let cookieName = 'EFHIII_SM';
@@ -35,6 +31,8 @@ let willDraw = false;
 let startingTime = 0;
 let progressStatus = [0, 0];
 let recentMistake = false;
+
+let file;
 
 let text = document.getElementById('text');
 let keyboard = document.getElementById('keyboard');
@@ -211,10 +209,8 @@ function loadCookie() {
             console.log(`${v} deprecated`);
         }
       }
-      if(cookieVersion !== version) {
-        problemWords = {};
-        lessonProgress = {};
-        problemWords = {};
+      if(cookieVersion < version) {
+        // fix cookie
       }
     } catch (e) {
       console.error(e);
@@ -367,6 +363,7 @@ function updateProgressText() {
 }
 
 function loadLessonText(txt) {
+  file = txt;
   lessonText = [];
   lessonStrokes = [];
   let lines = txt.split('\n');
@@ -457,6 +454,9 @@ function loadLessonText(txt) {
       lessonStrokes.push(pushAfter[i][1].split(' '));
     }
   }
+
+  sceneDivs['lessonSelect'].style.display = 'none';
+  sceneDivs['lesson'].style.display = 'block';
   lessonPhrase = 0;
   lessonStroke = 0;
   mistakes = 0;
@@ -466,6 +466,10 @@ function loadLessonText(txt) {
 }
 
 function loadLesson(id) {
+  if(file) {
+    loadLessonText(file);
+    return;
+  }
   onLesson = id % lessons.length;
   getFile('lessons/' + lessons[onLesson].name + '.txt', loadLessonText);
 }
@@ -773,9 +777,9 @@ if(!(window.File && window.FileReader && window.FileList && window.Blob)) {
     //get the files
     const files = e.target.files
     if(files.length > 0) {
-      const file = files[0]
-      document.getElementById('filetext').textContent = file.name
-      parseFile(file)
+      const file = files[0];
+      document.getElementById('filetext').textContent = file.name;
+      parseFile(file);
     }
   })
 }
