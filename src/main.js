@@ -599,7 +599,7 @@ function drawtoLessonText() {
       open = false;
     }
     if(i < lessonText.length - 1 && lessonText[i + 1][0] === ' ') {
-      textHTML += `<span class='${lessonPhrase > i + 1 ? 'typed' : ''}'> </span>`;
+      textHTML += `<span class='${lessonPhrase > i + 1 || lessonPhrase > i && lessonStroke > 0 ? 'typed' : ''}'> </span>`;
     }
   }
   if(open) {
