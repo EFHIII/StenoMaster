@@ -106,6 +106,7 @@ function updateStats() {
   if(autoAdvance && progressStatus[0] >= repetitions && progressStatus[1] >= atAccuracy &&
     lessonProgress[lessons[onLesson].name].completed >= lessons[onLesson].repetitions) {
     onLesson++;
+    file = null;
     progressStatus = [0, 0];
     setTimeout(_ => {
       wpmDiv.innerText = 'N/A';
