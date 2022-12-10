@@ -80,7 +80,7 @@ function loadStorage() {
       }
       if(storageVersion < version) {
         // fix storage
-        lessons = {};
+        lessons = [];
         lessonProgress = {};
         problemWords = {};
       }
