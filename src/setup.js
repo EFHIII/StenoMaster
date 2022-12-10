@@ -4,7 +4,7 @@ outline search / word search
 toggle problem words for pyramid drill
 */
 
-let version = 0.3.1;
+let version = 0.4;
 let lessons = [];
 let lessonProgress = {};
 let makeSaves = true;
