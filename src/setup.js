@@ -4,9 +4,10 @@ outline search / word search
 toggle problem words for pyramid drill
 */
 
-let version = 0.3;
+let version = 0.3.1;
 let lessons = [];
 let lessonProgress = {};
+let makeSaves = true;
 
 let storageName = 'EFHIII_SM';
 

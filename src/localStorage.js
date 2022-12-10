@@ -40,6 +40,7 @@ function logWord(wordA, mistake) {
 }
 
 function saveStorage() {
+  if(!makeSaves) return;
   let storage = {
     lessons: lessons,
     lessonProgress: lessonProgress,

@@ -98,6 +98,7 @@ function parseFile(file) {
       }
       return;
     }
+    makeSaves = false;
     onLesson = 0;
     lessons.unshift({
       name: file.name.replace(/\..+/,''),
