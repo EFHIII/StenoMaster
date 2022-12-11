@@ -88,11 +88,14 @@ function parseFile(file) {
     if(e.target.result[0] === '[') {
       try {
         let newLessons = JSON.parse(e.target.result);
-        lessons = lessons.concat(newLessons);
+        for(let lesson of newLessons) {
+          if(lessons.map(JSON.stringify).indexOf(JSON.stringify(lesson)) < 0) {
+            lessons.push(lesson);
+          }
+        }
         updateLessonList();
         saveStorage();
-      }
-      catch (e) {
+      } catch (e) {
         console.error(e);
         alert('Error: bad file');
       }
@@ -101,13 +104,12 @@ function parseFile(file) {
     makeSaves = false;
     onLesson = 0;
     lessons.unshift({
-      name: file.name.replace(/\..+/,''),
+      name: file.name.replace(/\..+/, ''),
       repetitions: 10
     });
     if(e.target.result.indexOf('\x00') > 0) {
       readSMFile(e.target.result);
-    }
-    else {
+    } else {
       readEFHFile(e.target.result);
     }
   }
@@ -116,8 +118,8 @@ function parseFile(file) {
 
 function readSMFile(file, static = true) {
   let f = file;
-  f = f.replace(/\r/g,'');
-  f = f.replace(/1/g,'#^');
+  f = f.replace(/\r/g, '');
+  f = f.replace(/1/g, '#^');
   f = f.split('\n');
 
   let out = '';
@@ -140,7 +142,7 @@ function readSMFile(file, static = true) {
     for(let word in txt) {
       txt[word] = toPlover(txt[word]);
     }
-    out += ' '+txt.join(' ');
+    out += ' ' + txt.join(' ');
     out += '\n';
   }
 

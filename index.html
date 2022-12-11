@@ -1,63 +1,72 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta name="google" content="notranslate" />
-    <title>Test</title>
-    <meta name="description" content="A stenography practice program for the RWG (Robert/Walsh/Gonzalez) theory compatible with any stenotype using Plover.">
-    <link rel="stylesheet" href="src/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div class="scene">
-      <p>A stenography practice program for the RWG (Robert/Walsh/Gonzalez) theory compatible with any stenotype using Plover.</p>
-    </div>
-    <div class="scene" id="problems"></div>
-    <div class="scene" id="lessonSelect">
-      <div id="settings">
-        <input type="checkbox" name="auto-advance" checked="true" id="autoAdvance">
-        <label for="auto-advance">Auto advance lessons</label><br>
-        <div id="autoAdvanceSettings">
-          <input type="number" name="repetitions" value="10" min="1" max="100" id="repetitions">
-          <label for="repetitions">repetitions with</label><br>
-          <input type="number" name="accuracy" value="1" min="1" max="100" id="atAccuracy">
-          <label for="accuracy">at</label><br>
-          <input type="number" name="accuracy" value="96" min="96" max="100" id="accuracyTarget">
-          <label for="accuracy">% accuracy</label>
-        </div>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="google" content="notranslate" />
+  <title>Test</title>
+  <meta name="description" content="A stenography practice program for the RWG (Robert/Walsh/Gonzalez) theory compatible with any stenotype using Plover.">
+  <link rel="stylesheet" href="src/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="scene">
+    <p>A stenography practice program for the RWG (Robert/Walsh/Gonzalez) theory compatible with any stenotype using Plover.</p>
+  </div>
+  <div class="scene" id="problems"></div>
+  <div class="scene" id="lessonSelect">
+    <div id="settings">
+      <input type="checkbox" name="auto-advance" checked="true" id="autoAdvance">
+      <label for="auto-advance">Auto advance lessons</label><br>
+      <div id="autoAdvanceSettings">
+        <input type="number" name="repetitions" value="10" min="1" max="100" id="repetitions">
+        <label for="repetitions">repetitions with</label><br>
+        <input type="number" name="accuracy" value="1" min="1" max="100" id="atAccuracy">
+        <label for="accuracy">at</label><br>
+        <input type="number" name="accuracy" value="96" min="96" max="100" id="accuracyTarget">
+        <label for="accuracy">% accuracy</label>
       </div>
-      <div class="otherLink">
-        <a class="lessonLink" href="?problems=true">Problem words</a><br>
-        <a class="lessonLink" href="?pyramid=true">Pyramid Drill</a><br>
-        <a class="lessonLink" href="generate" target="_blank">Make new lesson</a>
-        <div id="filedrop">
-          <div id="filetext">Drop a lesson<br>file here</div>
-          <input type="file" accept="text/plain, .txt, .lsn">
-        </div>
-      </div>
-      <div id="lessonList"></div>
     </div>
-    <div id="lesson" class="scene">
-      <div id="text"></div>
-      <div id="keyboard">
-        <span class="stenoKey steno#" style='padding-left: 6.6em;padding-right: 8.2em'>#</span><br>
-        <span class="stenoKey steno^">S</span> <span class="stenoKey stenoT">T</span> <span class="stenoKey stenoP">P</span> <span class="stenoKey stenoH">H</span> <span class="stenoKey steno*" style="position:absolute;">&nbsp;</span><span class="stenoKey steno*" style="position:relative;top:0.6em;">*</span> <span class="stenoKey steno-F">F</span> <span class="stenoKey steno-P">P</span> <span class="stenoKey steno-L">L</span> <span class="stenoKey steno-T">T</span> <span class="stenoKey steno-D">D</span><br>
-        <span class="stenoKey stenoS">S</span> <span class="stenoKey stenoK">K</span> <span class="stenoKey stenoW">W</span> <span class="stenoKey stenoR">R</span> <span class="stenoKey steno*">&nbsp;</span> <span class="stenoKey steno-R">R</span> <span class="stenoKey steno-B">B</span> <span class="stenoKey steno-G">G</span> <span class="stenoKey steno-S">S</span> <span class="stenoKey steno-Z">Z</span><br>
-        <span class="stenoKey">&nbsp;</span> <span class="stenoKey">&nbsp;</span> <span class="stenoKey">&nbsp;</span><span class="stenoKey stenoA">A</span> <span class="stenoKey stenoO">O</span>&nbsp;<span class="stenoKey stenoE">E</span> <span class="stenoKey stenoU">U</span><span class="stenoKey">&nbsp;</span> <span class="stenoKey">&nbsp;</span> <span class="stenoKey">&nbsp;</span> <span class="stenoKey">&nbsp;</span>
+    <div class="otherLink">
+      <a class="lessonLink" href="?problems=true">Problem words</a><br>
+      <a class="lessonLink" href="?pyramid=true">Pyramid Drill</a><br>
+      <a class="lessonLink" href="generate" target="_blank">Make new lesson</a>
+      <div id="filedrop">
+        <div id="filetext">Drop a lesson<br>file here</div>
+        <input type="file" accept="text/plain, .txt, .lsn">
       </div>
-      <div id="accuracy">N/A</div>
-      <div id="wpm">N/A</div>
-      <div id="progress"></div>
     </div>
-    <script src="src/setup.js" type="text/javascript" charset="utf-8"></script>
-    <script src="src/localStorage.js" type="text/javascript" charset="utf-8"></script>
-    <script src="src/loadLesson.js" type="text/javascript" charset="utf-8"></script>
-    <script src="src/lessonList.js" type="text/javascript" charset="utf-8"></script>
-    <script src="src/runLesson.js" type="text/javascript" charset="utf-8"></script>
-    <script src="src/parseFiles.js" type="text/javascript" charset="utf-8"></script>
-    <script src="src/scenes.js" type="text/javascript" charset="utf-8"></script>
-    <script src="src/steno.js" type="text/javascript" charset="utf-8"></script>
-  </body>
+    <div id="lessonList"></div>
+  </div>
+  <div id="lesson" class="scene">
+    <div id="text"></div>
+    <div id="stenoLastStroke"></div>
+    <div id="stenoTape"></div>
+    <div id="keyboard">
+      <span class="stenoKey steno#" style='padding-left: 6.6em;padding-right: 8.2em'>#</span><br>
+      <span class="stenoKey steno^">S</span> <span class="stenoKey stenoT">T</span> <span class="stenoKey stenoP">P</span> <span class="stenoKey stenoH">H</span> <span class="stenoKey steno*" style="position:absolute;">&nbsp;</span><span
+        class="stenoKey steno*" style="position:relative;top:0.6em;">*</span> <span class="stenoKey steno-F">F</span> <span class="stenoKey steno-P">P</span> <span class="stenoKey steno-L">L</span> <span class="stenoKey steno-T">T</span> <span
+        class="stenoKey steno-D">D</span><br>
+      <span class="stenoKey stenoS">S</span> <span class="stenoKey stenoK">K</span> <span class="stenoKey stenoW">W</span> <span class="stenoKey stenoR">R</span> <span class="stenoKey steno*">&nbsp;</span> <span class="stenoKey steno-R">R</span>
+      <span class="stenoKey steno-B">B</span> <span class="stenoKey steno-G">G</span> <span class="stenoKey steno-S">S</span> <span class="stenoKey steno-Z">Z</span><br>
+      <span class="stenoKey">&nbsp;</span> <span class="stenoKey">&nbsp;</span> <span class="stenoKey">&nbsp;</span><span class="stenoKey stenoA">A</span> <span class="stenoKey stenoO">O</span>&nbsp;<span class="stenoKey stenoE">E</span> <span
+        class="stenoKey stenoU">U</span><span class="stenoKey">&nbsp;</span> <span class="stenoKey">&nbsp;</span> <span class="stenoKey">&nbsp;</span> <span class="stenoKey">&nbsp;</span>
+    </div>
+    <div id="accuracy">N/A</div>
+    <div id="wpm">N/A</div>
+    <div id="progress"></div>
+  </div>
+  <script src="src/setup.js" type="text/javascript" charset="utf-8"></script>
+  <script src="src/localStorage.js" type="text/javascript" charset="utf-8"></script>
+  <script src="src/loadLesson.js" type="text/javascript" charset="utf-8"></script>
+  <script src="src/lessonList.js" type="text/javascript" charset="utf-8"></script>
+  <script src="src/steno.js" type="text/javascript" charset="utf-8"></script>
+  <script src="src/runLesson.js" type="text/javascript" charset="utf-8"></script>
+  <script src="src/parseFiles.js" type="text/javascript" charset="utf-8"></script>
+  <script src="src/scenes.js" type="text/javascript" charset="utf-8"></script>
+</body>
+
 </html>

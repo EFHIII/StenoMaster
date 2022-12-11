@@ -252,7 +252,7 @@ function deconstructWord(word, strokes) {
   }
 
   if(suffixDict.hasOwnProperty(lastStroke)) {
-    let match = word.match(RegExp(suffixDict[lastStroke]+'$', 'i'));
+    let match = word.match(RegExp(suffixDict[lastStroke] + '$', 'i'));
     if(match && match.index === word.length - suffixDict[lastStroke].length) {
       let start = deconstructWord(
         word.slice(0, match.index),
@@ -265,7 +265,7 @@ function deconstructWord(word, strokes) {
   }
 
   if(suffixDict2.hasOwnProperty(lastStroke)) {
-    let match = word.match(RegExp(suffixDict2[lastStroke]+'$', 'i'));
+    let match = word.match(RegExp(suffixDict2[lastStroke] + '$', 'i'));
     if(match && match.index === word.length - suffixDict2[lastStroke].length) {
       let start = deconstructWord(
         word.slice(0, match.index),
@@ -278,7 +278,7 @@ function deconstructWord(word, strokes) {
   }
 
   if(prefixDict.hasOwnProperty(strokes[0])) {
-    let match = word.match(RegExp('^'+prefixDict[strokes[0]], 'i'));
+    let match = word.match(RegExp('^' + prefixDict[strokes[0]], 'i'));
     if(match) {
       let end = deconstructWord(
         word.slice(match.index + prefixDict[strokes[0]].length),
@@ -300,7 +300,7 @@ function loadLessonText(txt) {
   lessonStrokes = [];
   let lines = txt.split('\n');
   for(let i = 0; i < lines.length - 1; i += 2) {
-    let regex = new RegExp('_.+?_','g');
+    let regex = new RegExp('_.+?_', 'g');
     let line = lines[i].replace(/\r/g, '');
     line = line.replace(/([^\/])\//g, '$1\x00');
     line = line.replace(/\/\//g, '/');
@@ -308,19 +308,19 @@ function loadLessonText(txt) {
     // underline
     let matches = line.match(regex) || [];
     for(let match of matches) {
-      line = line.replace(match, match.replace('_','<u>').replace('_','</u>'));
+      line = line.replace(match, match.replace('_', '<u>').replace('_', '</u>'));
     }
     // bold
-    regex = new RegExp('\\*\\*.+?\\*\\*','g');
+    regex = new RegExp('\\*\\*.+?\\*\\*', 'g');
     matches = line.match(regex) || [];
     for(let match of matches) {
-      line = line.replace(match, match.replace('**','<b>').replace('**','</b>'));
+      line = line.replace(match, match.replace('**', '<b>').replace('**', '</b>'));
     }
     // italic
-    regex = new RegExp('\\*.+?\\*','g');
+    regex = new RegExp('\\*.+?\\*', 'g');
     matches = line.match(regex) || [];
     for(let match of matches) {
-      line = line.replace(match, match.replace('*','<i>').replace('*','</i>'));
+      line = line.replace(match, match.replace('*', '<i>').replace('*', '</i>'));
     }
 
     let steno = lines[i + 1].replace(/\r/g, '').split(' ');
@@ -340,13 +340,13 @@ function loadLessonText(txt) {
       for(let stroke of startStrokes) {
         let index = strokes.indexOf(stroke + ' ');
         if(index === 0) {
-            lessonText.push((hadStart ? '/' : ' ') + line[0]);
-            lessonStrokes.push(strokes.slice(0, index + stroke.length).split(' '));
-            line = line.slice(1);
-            strokes = strokes.slice(stroke.length + 1);
-            done = false;
-            hadStart = true;
-            break;
+          lessonText.push((hadStart ? '/' : ' ') + line[0]);
+          lessonStrokes.push(strokes.slice(0, index + stroke.length).split(' '));
+          line = line.slice(1);
+          strokes = strokes.slice(stroke.length + 1);
+          done = false;
+          hadStart = true;
+          break;
         }
       }
     }
@@ -402,8 +402,7 @@ function loadLessonText(txt) {
 function gotFile(txt) {
   if(txt.indexOf('\x00') > 0) {
     readSMFile(txt, false);
-  }
-  else {
+  } else {
     readEFHFile(txt, false);
   }
 }

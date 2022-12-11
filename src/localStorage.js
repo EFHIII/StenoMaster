@@ -8,16 +8,15 @@ function getStorage(cname) {
 }
 
 function logWord(wordA, mistake) {
-  let word = [wordA[0].slice(1).replace(/<\/?u>/g,''), wordA[1]];
+  let word = [wordA[0].slice(1).replace(/<\/?u>/g, ''), wordA[1]];
   if(!/\w/.test(word)) return;
-  let simpler = word[0].toLowerCase().replace(/<\/?[ib]>/g,'');
+  let simpler = word[0].toLowerCase().replace(/<\/?[ib]>/g, '');
   if(simpler !== word[0] &&
     problemWords.hasOwnProperty(simpler) &&
     word[1].join('/') === problemWords[simpler][2].join('/')) {
     if(mistake) {
       problemWords[simpler][0]++;
-    }
-    else {
+    } else {
       problemWords[simpler][1]++;
     }
     if(problemWords.hasOwnProperty(word[0])) {
@@ -33,8 +32,7 @@ function logWord(wordA, mistake) {
   }
   if(mistake) {
     problemWords[word[0]][0]++;
-  }
-  else {
+  } else {
     problemWords[word[0]][1]++;
   }
 }
@@ -58,7 +56,7 @@ function loadStorage() {
       storage = JSON.parse(storage);
       let storageVersion = 0;
       for(let v in storage) {
-        switch (v) {
+        switch(v) {
           case 'version':
             storageVersion = storage[v];
             break;

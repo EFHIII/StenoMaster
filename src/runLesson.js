@@ -7,15 +7,14 @@ function updateProgressText() {
     };
   }
   progressDiv.innerHTML = autoAdvance ?
-    `${lessons[onLesson].name} `+
+    `${lessons[onLesson].name} ` +
     (
       lessons[onLesson].repetitions - lessonProgress[lessons[onLesson].name].completed > repetitions - progressStatus[0] ?
       `<span style='color:white'>${lessonProgress[lessons[onLesson].name].completed}/${lessons[onLesson].repetitions}</span> ` :
       `<span style='color:white'>${progressStatus[0]}/${repetitions}</span> `
     ) +
-    `with <span style='color:white'>${progressStatus[1]}/${atAccuracy}</span>`+
-    ` at ${accuracyTarget}%`
-    :
+    `with <span style='color:white'>${progressStatus[1]}/${atAccuracy}</span>` +
+    ` at ${accuracyTarget}%` :
     lessons[onLesson].name;
 }
 
@@ -35,8 +34,7 @@ function drawtoLessonText() {
         textHTML += `<span class='phrase${lessonStroke > part ? ' typed' : ''}'>${escapeHtml(wordParts[part])}</span>`;
       }
       textHTML += `</span>`;
-    }
-    else {
+    } else {
       textHTML += `<span class='phrase${lessonPhrase > i ? ' typed' : ''}' id = 'lesson-${i}'>${escapeHtml(lessonText[i].replace(/\x00/g, '').slice(1))}</span>`;
     }
     if(open && i < lessonText.length - 1 && lessonText[i + 1][0] === ' ') {
@@ -52,18 +50,18 @@ function drawtoLessonText() {
   }
   text.innerHTML = textHTML;
   let nextPhrase = document.getElementById(`lesson-${lessonPhrase}`);
-  if(nextPhrase){
-      nextPhrase.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
-      });
-    }
+  if(nextPhrase) {
+    nextPhrase.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  }
 }
 
 function updateStats() {
   let minutes = (Date.now() - startingTime) / 1000 / 60;
   let strokes = lessonStrokes.reduce((a, b) => a + b.length, 0);
-  let accuracy = (((strokes - mistakes) / strokes * 1000) >> 0 ) / 10;
+  let accuracy = (((strokes - mistakes) / strokes * 1000) >> 0) / 10;
 
   // word = two strokes
   //let wpm = ((strokes / 2 / minutes * 10) >> 0) / 10;
@@ -79,11 +77,9 @@ function updateStats() {
 
   if(pyramidWords) {
     continuePyramid();
-  }
-  else if(onLesson < 0) {
+  } else if(onLesson < 0) {
 
-  }
-  else if(lessonProgress.hasOwnProperty(lessons[onLesson].name)) {
+  } else if(lessonProgress.hasOwnProperty(lessons[onLesson].name)) {
     lessonProgress[lessons[onLesson].name] = {
       completed: lessonProgress[lessons[onLesson].name].completed + 1,
       fastest: (strokes - mistakes) / strokes >= 0.96 ? Math.max(lessonProgress[lessons[onLesson].name].fastest, wpm) : lessonProgress[lessons[onLesson].name].fastest,
@@ -91,8 +87,7 @@ function updateStats() {
         ((strokes - mistakes) / strokes >= 0.96 ? 1 : 0)
     };
     updateProgressText();
-  }
-  else{
+  } else {
     lessonProgress[lessons[onLesson].name] = {
       completed: 1,
       fastest: wpm,
@@ -154,8 +149,19 @@ function draw(skip) {
     txt = '';
     return;
   }
+  if(txt[0] === ' ') {
+    txt = txt.slice(1);
+  }
+  console.log(txt);
 
-  if(txt.slice(1) === lessonStrokes[lessonPhrase][lessonStroke].replace('^', 'S')) {
+  if(!isSteno.test(txt)) {
+    console.log(`failed`);
+    txt = '';
+    return;
+  }
+
+  if(txt === lessonStrokes[lessonPhrase][lessonStroke].replace('^', 'S')) {
+    pushStenoTape(txt);
     hideStroke();
     if(lessonPhrase === 0 && lessonStroke === 0) {
       startingTime = Date.now();
@@ -175,11 +181,11 @@ function draw(skip) {
         lessonStroke = 0;
         lessonPhrase = 0;
       }
-    }
-    else {
+    } else {
       drawtoLessonText();
     }
   } else if(!recentMistake) {
+    pushStenoTape(txt, true);
     mistakes++;
     recentMistake = true;
     displayStroke();
@@ -187,6 +193,9 @@ function draw(skip) {
       lessonText[lessonPhrase],
       lessonStrokes[lessonPhrase]
     ], true);
+  }
+  else {
+    pushStenoTape(txt, true);
   }
 
   txt = '';
@@ -197,10 +206,16 @@ function keydown(event) {
     event.preventDefault();
   }
   if(event.key === 'Escape') {
-    setTimeout(_ => window.location.href = window.location.href.replace(/\?.+/,''), 0);
+    setTimeout(_ => window.location.href = window.location.href.replace(/\?.+/, ''), 0);
     return;
   }
   if(scene !== 'lesson' && scene !== 'pyramid') {
+    return;
+  }
+
+  if(event.key === 'Backspace' && Date.now() - t > 9) {
+    pushStenoTape('*');
+    t = Date.now();
     return;
   }
 
@@ -218,5 +233,35 @@ function keydown(event) {
     window.requestAnimationFrame(draw);
   }
 }
+
+const StenoKeys = '#STKPWHRAO*EUFRPBLGTSDZ';
+const StenoNumberKeys = '#12K3W4R50*EU6R7B8G9SDZ';
+let isNumber = false;
+
+function stenoToHTMLMap(steno, id) {
+  return(`<span class='${steno === ' ' ? 'inactive' : 'active'}Steno'>` +
+  `${isNumber ? StenoNumberKeys[id] : StenoKeys[id]}</span>`);
+}
+
+//#STKPWHRAO*EUFRPBLGTSDZ
+function stenoToHTMLTape(steno, mistake) {
+  isNumber = stenoToStenoTape(steno)[0][0] === '#';
+  let ans = stenoToStenoTape(steno)[0].split('')
+  .map(stenoToHTMLMap).join('');
+  if(mistake) {
+    ans = ans.replace(/'activeSteno'/g, "'activeStenoMistake'");
+  }
+  return ans;
+}
+
+let stenoTapeLog = new Array(12).fill(stenoToHTMLTape(''));
+
+function pushStenoTape(steno, mistake = false) {
+  stenoLastStroke.innerHTML = mistake ? `<span class='activeStenoMistake'>${steno}</span>`: steno
+  stenoTapeLog.shift();
+  stenoTapeLog.push(stenoToHTMLTape(steno, mistake));
+  stenoTape.innerHTML = stenoTapeLog.join('<br>');
+}
+stenoTape.innerHTML = stenoTapeLog.join('<br>');
 
 document.addEventListener('keydown', keydown);

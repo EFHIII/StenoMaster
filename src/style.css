@@ -16,7 +16,6 @@ body {
 }
 
 /* filedrop */
-
 #filedrop {
   position: relative;
   left: 0;
@@ -74,7 +73,6 @@ body {
 }
 
 /* problem words screen */
-
 #problems {
   text-align: center;
   font-size: 2em;
@@ -92,6 +90,7 @@ body {
     position: fixed;
     left: 0;
   }
+
   .otherLink {
     text-align: right;
     position: fixed;
@@ -178,7 +177,7 @@ a:hover {
   margin: 0.5em;
   padding: 0.5em;
   width: calc(100% - 2em);
-  height: calc(100vh - 12em);
+  height: calc(100vh - 13em);
   overflow-y: scroll;
 }
 
@@ -188,6 +187,45 @@ a:hover {
 
 .typed {
   background-color: grey;
+}
+
+/* steno settings */
+#stenoLastStroke {
+  text-align: center;
+  color: #aaa;
+  font-size: 2em;
+  height: 1em;
+  margin-left: 0.5em;
+  margin-right: 0.25em;
+}
+
+#stenoTape {
+  position: fixed;
+  right: 0;
+  padding-right: 1em;
+}
+
+.inactiveSteno {
+  color: #444;
+}
+
+.activeStenoMistake {
+  color: #f44;
+}
+
+@media (max-height:550px) {
+  #stenoLastStroke {
+    display: none;
+  }
+  #text {
+    height: calc(100vh - 12em);
+  }
+}
+
+@media (max-width:1220px) {
+  #stenoTape {
+    display: none;
+  }
 }
 
 /* steno keyboard diagram */

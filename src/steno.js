@@ -113,9 +113,55 @@ function LongToShortSteno(str) {
   if(str['-Z']) ans += 'Z';
 
   if(ans[ans.length - 1] == '-') {
-    ans = ans.replace('-','');
+    ans = ans.replace('-', '');
   }
 
+  return ans;
+}
+
+function stenoToStenoTape(steno) {
+  let ans = [];
+  let strokes = steno.replace(/\//g,' ').split(' ');
+  for(let stroke of strokes) {
+    let str = stroke.slice();
+
+    const numberTranslation = {
+      '0': 'O',
+      '1': 'S',
+      '2': 'T',
+      '3': 'P',
+      '4': 'H',
+      '5': 'A',
+      '6': '-F',
+      '7': '-P',
+      '8': '-L',
+      '9': '-T',
+    };
+
+    for(let number in numberTranslation) {
+      if(str.indexOf(number) >= 0) {
+        if(str[0] !== '#') {
+          str = '#' + str;
+        }
+        str = str.replace(number, numberTranslation[number]);
+      }
+    }
+
+    let stenoOrder = '#STKPWHRAO*EUFRPBLGTSDZ';
+
+    for(let i = 0; i < stenoOrder.length; i++) {
+      if(i > 10) {
+        if(str[i] === '-') {
+          str = str.substring(0, i) + str.substring(i + 1);
+        }
+      }
+      if(str[i] !== stenoOrder[i]) {
+        str = str.substring(0, i) + ' ' + str.substring(i);
+      }
+    }
+
+    ans.push(str);
+  }
   return ans;
 }
 
@@ -175,7 +221,7 @@ function MasterToLongSteno(word) {
 
   for(let char of word) {
     if(!conversion.hasOwnProperty(char)) {
-      throw(`error\nin ${word}\n${char} not convertable`);
+      throw (`error\nin ${word}\n${char} not convertable`);
     }
     ans[conversion[char]] = true;
   }

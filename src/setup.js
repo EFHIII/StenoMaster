@@ -37,12 +37,16 @@ let recentMistake = false;
 
 let file;
 
+const isSteno = /^(#?[S1]?[T2]?K?[P3]?W?[H4]?R?[A5]?[O0]?[\*\-]?E?U?[F6]?R?[P7]?B?[L8]?G?[T9]?S?D?Z?\/)*(#?[S1]?[T2]?K?[P3]?W?[H4]?R?[A5]?[O0]?[\*\-]?E?U?[F6]?R?[P7]?B?[L8]?G?[T9]?S?D?Z?)$/;
+
 let text = document.getElementById('text');
 let keyboard = document.getElementById('keyboard');
 let accuracyDiv = document.getElementById('accuracy');
 let wpmDiv = document.getElementById('wpm');
 let progressDiv = document.getElementById('progress');
 let lessonList = document.getElementById('lessonList');
+let stenoTape = document.getElementById('stenoTape');
+let stenoLastStroke = document.getElementById('stenoLastStroke');
 
 let sceneDivs = {
   lesson: document.getElementById('lesson'),

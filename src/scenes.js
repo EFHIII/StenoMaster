@@ -37,8 +37,8 @@ function changeScene(toScene) {
       }
       break;
     case 'lesson':
-      if(lessonNames.indexOf(value.replace(/-/g,' ')) >= 0) {
-        onLesson = lessonNames.indexOf(value.replace(/-/g,' '));
+      if(lessonNames.indexOf(value.replace(/-/g, ' ')) >= 0) {
+        onLesson = lessonNames.indexOf(value.replace(/-/g, ' '));
         scene = 'lesson';
       }
       break;
