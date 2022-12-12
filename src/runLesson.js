@@ -140,22 +140,22 @@ function hideStroke() {
 }
 
 function draw(skip) {
-  if(skip !== 'skip' && Date.now() - t < 9) {
+  if((skip !== 'skip' && Date.now() - t < 9) || txt === ' ' || txt === ' -') {
     window.requestAnimationFrame(draw);
     return;
   }
   willDraw = false;
-  if(' 1234567890'.indexOf(txt[0]) < 0 || txt === ' ') {
+  if(' 1234567890'.indexOf(txt[0]) < 0) {
+    console.log(`invalid: ${txt}`);
     txt = '';
     return;
   }
   if(txt[0] === ' ') {
     txt = txt.slice(1);
   }
-  console.log(txt);
 
   if(!isSteno.test(txt)) {
-    console.log(`failed`);
+    console.log(`failed: ${txt}`);
     txt = '';
     return;
   }
