@@ -102,17 +102,7 @@ let suffixDict = {
   'W-FP': 'wich',
   'AE': "'",
   'OE': 'ow',
-  'SEUFPLT': '6',
-  'SEFT': '7',
-  'WUPB': '1',
-  'TWO': '2',
-  'THRAOE': '3',
-  'TPOUR': '4',
   'TPAOEUF': '5',
-  'SEUFPL': '6',
-  'SEFPB': '7',
-  'AET': '8',
-  'TPHAOEUPB': '9',
   'PWE': ' be',
   'P-PL': ' p.m.',
   'AEPL': ' a.m.',
@@ -154,7 +144,6 @@ let suffixDict2 = {
 let infixDict = {
   'A*U': 'a',
   'AO*': 'o',
-  'TAEPB': ' ',
   'STKAOER': ':',
 };
 
@@ -183,12 +172,31 @@ let literalVariants = [
   [/OU/, 'OW'],
   [/I/, 'Y'],
   [/D/, 'ED'],
+  [/AE/, 'AI'],
   [/(A|E|I|I|O|U)E(\w)/, '$1$2E'],
   [/Y(\w)/, 'Y$1E'],
   [/Z$/, 'S'],
   [/Z$/, 'SE'],
   [/Z$/, 'ZE'],
 ];
+
+let numberDict = {
+  'TWEPBT': '2',
+  'THEURT': '3',
+  'TPEUFT': '5',
+  'SEUFPLT': '6',
+  'SEFT': '7',
+  'WUPB': '1',
+  'TWO': '2',
+  'THRAOE': '3',
+  'TPOUR': '4',
+  'SEUFPL': '5',
+  'SEUFPL': '6',
+  'SEFPB': '7',
+  'AET': '8',
+  'TPHAOEUPB': '9',
+  // teen: TAEPB
+};
 
 function toLiteral(steno) {
   let ans = steno
@@ -197,6 +205,7 @@ function toLiteral(steno) {
   .replace('SKWR','J')
   .replace('PBLG','J')
   .replace('BGS','X')
+  .replace('FPL','X')
   .replace('TPH','N')
   .replace('KWR','Y')
   .replace('PW','B')
@@ -207,7 +216,6 @@ function toLiteral(steno) {
   .replace('PL','M')
   .replace('PB','N')
   .replace('SR','V')
-  .replace('KP','X')
   .replace('KR','C')
   .replace('KW','Q')
   .replace('QE','QUE')
@@ -367,6 +375,36 @@ function deconstructWord(word, withStrokes) {
       if(!end) return false;
       let start = word.slice(0, match.index + match[0].length);
       return `${start}\x00${end}`;
+    }
+  }
+
+  if(/^[0-9]/.test(word)) {
+    if(strokes[1] === 'TAEPB') {
+      if(numberDict.hasOwnProperty(strokes[0])) {
+        let match = word.match(RegExp('^1' + numberDict[strokes[0]], 'i'));
+        if(match) {
+          let end = deconstructWord(
+            word.slice(match.index + 1 + numberDict[strokes[0]].length),
+            strokes.slice(2)
+          );
+          if(!end) return false;
+          let start = word.slice(1, 1 + match.index + numberDict[strokes[0]].length);
+          return `<r>${start}\x001</r>\x00${end}`;
+        }
+      }
+    }
+
+    if(numberDict.hasOwnProperty(strokes[0])) {
+      let match = word.match(RegExp('^' + numberDict[strokes[0]], 'i'));
+      if(match) {
+        let end = deconstructWord(
+          word.slice(match.index + numberDict[strokes[0]].length),
+          strokes.slice(1)
+        );
+        if(!end) return false;
+        let start = word.slice(0, match.index + numberDict[strokes[0]].length);
+        return `${start}\x00${end}`;
+      }
     }
   }
 

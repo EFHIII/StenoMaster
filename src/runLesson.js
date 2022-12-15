@@ -29,9 +29,39 @@ function drawtoLessonText() {
 
     if(lessonPhrase === i && lessonStroke > 0 && lessonText[i].indexOf('\x00') > 0) {
       let wordParts = lessonText[i].slice(1).split('\x00');
+      let order = [];
+      let reverseStack = [];
+      let reversing = false;
+      for(let r = 0; r < wordParts.length; r++) {
+        if(wordParts[r].indexOf('<r>') === 0) {
+          reversing = true;
+        }
+        if(wordParts[r].indexOf('</r>') === 0) {
+          reversing = false;
+          order.push(...reverseStack);
+          reverseStack = [];
+        }
+        if(reversing) {
+          reverseStack.unshift(r);
+        }
+        else {
+          order.push(r);
+        }
+        if(wordParts[r].indexOf('<r>') > 0) {
+          reversing = true;
+        }
+        if(wordParts[r].indexOf('</r>') > 0) {
+          reversing = false;
+          order.push(...reverseStack);
+          reverseStack = [];
+        }
+      }
+
+      wordParts = wordParts.map(a => a.replace(/<\/?r>/g,''))
+
       textHTML += `<span id='lesson-${i}'>`;
       for(let part = 0; part < wordParts.length; part++) {
-        textHTML += `<span class='phrase${lessonStroke > part ? ' typed' : ''}'>${escapeHtml(wordParts[part])}</span>`;
+        textHTML += `<span class='phrase${lessonStroke > order[part] ? ' typed' : ''}'>${escapeHtml(wordParts[order[part]])}</span>`;
       }
       textHTML += `</span>`;
     } else {

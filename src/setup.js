@@ -93,5 +93,7 @@ function escapeHtml(unsafe) {
     .replace(/&lt;\/i&gt;/g, "</i>")
     .replace(/&lt;b&gt;/g, "<b>")
     .replace(/&lt;\/b&gt;/g, "</b>")
-    .replace(/ /g, "&nbsp;");
+    .replace(/ /g, "&nbsp;")
+    .replace(/&lt;r&gt;/g, "<span class='phrase'>\u202e")
+    .replace(/&lt;\/r&gt;/g, "\u202c</span>");
 }
