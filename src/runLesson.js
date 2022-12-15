@@ -66,7 +66,9 @@ function updateStats() {
   // word = two strokes
   //let wpm = ((strokes / 2 / minutes * 10) >> 0) / 10;
   // word = txt with alpha/num
-  let wpm = (lessonText.filter(a => /[\w\d]/.test(a)).reduce((a, b) => a + b.slice(1).split(' ').length, 0) / minutes * 10 >> 0) / 10;
+  //let wpm = (lessonText.filter(a => /[\w\d]/.test(a)).reduce((a, b) => a + b.slice(1).split(' ').length, 0) / minutes * 10 >> 0) / 10;
+  // word = 5 chars
+  let wpm = ((lessonText.join('').replace(/<\/?\w>/g, '').length / 5 / minutes * 10) >> 0) / 10;
   accuracyDiv.innerText = `${accuracy}%`;
   wpmDiv.innerText = `${wpm} WPM`;
 
@@ -223,6 +225,20 @@ function keydown(event) {
     draw('skip');
   }
 
+  if(event.key === 'PageUp') {
+    onLesson = (onLesson + lessons.length - 1) % lessons.length;
+    file = null;
+    loadLesson(onLesson);
+    return;
+  }
+
+  if(event.key === 'PageDown') {
+    onLesson = (onLesson + 1) % lessons.length;
+    file = null;
+    loadLesson(onLesson);
+    return;
+  }
+
   if(event.key !== 'Shift') {
     txt += event.key;
   }
@@ -234,8 +250,6 @@ function keydown(event) {
   }
 }
 
-const StenoKeys = '#STKPWHRAO*EUFRPBLGTSDZ';
-const StenoNumberKeys = '#12K3W4R50*EU6R7B8G9SDZ';
 let isNumber = false;
 
 function stenoToHTMLMap(steno, id) {

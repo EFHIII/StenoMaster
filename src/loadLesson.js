@@ -1,164 +1,87 @@
 let prefixDict = {
+  'TEUBG': 'tiq',
+  'TKR': 'dr. ',
   'O*EUD': 'id',
-  'A': 'a',
-  'PHA*PB': 'man',
-  'A*D': 'ad',
-  'A*L': 'al',
-  'A*PBT': 'ant',
-  'KWR*EU': 'i',
-  'ARB': 'arb',
-  'EUT': 'it',
-  'A*RT': 'art',
-  'A*UT': 'aut',
   'AO*': 'o',
-  'PWAO*E': 'be',
-  'PW*EU': 'bi',
-  'PWAOEU': 'bi',
-  'PWAO*EU': 'by',
-  'KOE': 'co',
   'KO*E': 'co-',
-  'KO*PB': 'con',
-  'TRA': 'tra',
-  'TKAO*E': 'de',
-  'TKEUS': 'dis',
-  'TK*EUS': 'dys',
-  'AO*E': 'e',
-  '*EL': 'el',
-  '*EPL': 'em',
-  '*EPB': 'en',
   '*EPBT': 'enter',
-  'EP': 'ep',
   '*EBG': 'eq',
-  '*ER': 'er',
-  '*ES': 'es',
   '*EFPL': 'ex',
   'SKWRAOE': 'ge',
-  'H*EUP': 'hyp',
-  'HAO*EUP': 'hyp',
-  '*EUG': 'ig',
-  '*EUL': 'il',
-  '*EUPL': 'im',
-  '*EUPB': 'in',
   '*EUPBT': 'inter',
-  '*EUR': 'ir',
-  'PHAL': 'mal',
-  'PHAOEUBG': 'mic',
-  'ROE': 'ro',
   'PHAOEUBG': 'mil',
-  'KWR*EU': 'li',
-  'PH*EUS': 'mis',
-  'O*E': 'o',
-  'OB': 'ob',
-  'O*BGT': 'oct',
-  'O*PB': 'on',
-  'O*RG': 'org',
-  'O*RPB': 'orn',
-  'PAEUR': 'par',
   'A*U': 'a',
-  'P*ER': 'per',
-  'PRAO*E': 'pre',
-  'PREPBLG': 'prej',
-  'PRO*E': 'pro',
-  'RAO*E': 're',
-  'S*UB': 'sub',
   'SAO*UP': 'super',
-  'S*EUPL': 'sym',
-  'S*EUPB': 'syn',
   'T*EL': 'tele',
-  'TRAPBZ': 'trans',
-  'TR*EU': 'tri',
-  '*UPB': 'un',
-  'AOUPB': 'un',
-  'KWR*EU': 'i',
-  'PUB': 'pub',
-  'PUPB': 'pun',
   '*EFR': 'every',
-  'SEF': 'sev',
-  'TPOER': 'fore',
   'SKAPL': 'exam',
   'SKEPB': 'exten',
   'AOU': 'ua',
   'KREUPL': 'crim',
-  'PAR': 'par',
   'KO*RT': 'court',
-  'WEUT': 'wit',
+  'ABG': 'ack',
+  '1E': '11 ',
+  '2E': '22 ',
+  '3E': '33 ',
+  '4E': '44 ',
+  '5E': '55 ',
+  '6E': '66 ',
+  '7E': '77 ',
+  '8E': '88 ',
+  '9E': '99 ',
+  'HREFPB': '11 ',
+  'TWEFL': '12 ',
+  'TWEPBT': 'twent',
+  'THEURT': 'thirt',
+  'TPEUFT': 'fift',
+  'SEUFPLT': 'sixt',
+  'WUPB': 'one',
+  'TWO': 'two',
+  'THRAOE': 'three',
+  'TPOUR': 'four',
+  'SEUFPL': 'five',
+  'SEUFPL': 'six',
+  'SEFPB': 'seven',
+  'AET': 'eight',
+  'TPHAOEUPB': 'nine',
+  'TPHO': 'no ',
+  'AUL': 'all ',
+  'KWRUR': 'your',
 };
 
 let suffixDict = {
-  'OUT': 'out',
-  'WAOEUZ': 'wise',
-  'SAOEUD': 'cide',
-  'AOER': 'ere',
-  'EPBT': 'ent',
-  'UPBT': 'unt',
+  'SES': 'cess',
+  'SHAL': 'tial',
+  'EURB': 'ish',
+  'KWRA': 'ea',
   'AEZ': "'s",
-  'APBT': 'ant',
-  'PWAOBG': 'book',
-  'EUG': 'ig',
-  'EPB': 'en',
-  'EUPB': 'in',
-  'TKAEU': 'day',
-  'EUBGT': 'ict',
   'TKOT': '.',
-  'KOPL': 'com',
   '-BLT': 'ability',
   '-BL': 'able',
-  'KWRAED': 'ade',
   'APBLG': 'age',
-  'AL': 'al',
   'ALT': 'ality',
   'KWRAER': 'ary',
-  'KWRAET': 'ate',
   'AEUGS': 'ation',
   'AU': 'a',
   'TAOR': 'tory',
-  '-D': 'ed',
-  'EL': 'el',
-  'EPL': 'em',
-  'EPBD': 'end',
-  'ER': 'er',
   'ERT': 'erity',
-  'ERZ': 'ers',
-  'EFT': 'est',
   '-FL': 'ful',
   'TPHREU': 'fully',
-  'TPAOEU': 'fy',
   'TKPWR-PL': 'gram',
   'TKPWR-F': 'graph',
   'TKPWR-FR': 'grapher',
-  'EUBG': 'ic',
   'TKPWRAEF': 'graphy',
-  'KWRAEUD': 'iade',
-  'KWRAL': 'ial',
-  'KWRAPB': 'ian',
-  'KWRAR': 'iar',
   'KWRAEUR': 'iary',
-  'KWRAEUT': 'iate',
   'EUBLT': 'ibility',
   'EUBL': 'ible',
-  'KWRAOEUD': 'ide',
-  'KWRAOE': 'ie',
-  'KWRER': 'ier',
   'KWREUZ': 'ies',
-  'KWREFT': 'iest',
   'EULT': 'ility',
-  '-G': 'ing',
-  '-GZ': 'ings',
-  'KWROR': 'ior',
-  'EUFPL': 'ism',
-  'EUFT': 'ist',
   'EUGS': 'ition',
   'AOEUTS': 'itis',
   'EUT': 'ity',
-  'KWRUPL': 'ium',
-  'EUF': 'ive',
-  'EUZ': 'ize',
-  'HRAET': 'late',
   '-L': 'le',
-  '-LD': 'led',
   '-LS': 'less',
   '-LT': 'let',
-  'HREU': 'ly',
   '-PLT': 'ment',
   '-PBS': 'ness',
   '-PBT': "n't",
@@ -167,43 +90,162 @@ let suffixDict = {
   'KWRAOPB': 'on',
   'KWRAOR': 'or',
   'ORT': 'ority',
-  'OUS': 'ous',
+  'OUS': 'us',
   'PAEPBLG': 'pathy',
-  'RAET': 'rate',
   'RAEUGS': 'ration',
-  'REU': 'ry',
-  '-Z': 's',
   'S-FL': 'self',
   'SH-P': 'ship',
   'S-PL': 'some',
   '-PBLG': 'th',
   'T-PB': 'ton',
-  'TAOR': 'tory',
-  'TEU': 'ty',
-  'KWRAOUD': 'ude',
-  'AOU': 'uo',
-  'OUS': 'us',
   'KWRAOURL': 'ural',
-  'KWRAOUR': 'ure',
   'W-FP': 'wich',
-  'KWREU': 'y',
-  'AS': 'as',
-  'EUS': 'ice',
   'AE': "'",
+  'OE': 'ow',
+  'SEUFPLT': '6',
+  'SEFT': '7',
+  'WUPB': '1',
+  'TWO': '2',
+  'THRAOE': '3',
+  'TPOUR': '4',
+  'TPAOEUF': '5',
+  'SEUFPL': '6',
+  'SEFPB': '7',
+  'AET': '8',
+  'TPHAOEUPB': '9',
+  'PWE': ' be',
+  'P-PL': ' p.m.',
+  'AEPL': ' a.m.',
+  'TAEPB': 'teen',
+  'REURBS': 'ricious',
+  'EURBS': 'ious',
+  'AEURBS': 'acious',
+  'SHUS': 'tious'
 };
 
 let suffixDict2 = {
-  'EUF': 'if',
-  'SAOEUD': 'side',
+  'SHUS': 'xious',
+  'REURBS': 'ritious',
+  'KWREU': '',
+  'P-PL': ' p.m',
+  'AEPL': ' a.m',
+  'AOU': 'ue',
+  'TAEPB': '',
+  'WUPB': '10',
+  'TWO': '20',
+  'THRAOE': '30',
+  'TPOUR': '40',
+  'TPAOEUF': '50',
+  'SEUFPL': '60',
+  'SEFPB': '70',
+  'AET': '80',
+  'TPHAOEUPBT': '90',
+  'TWEPBT': '20',
+  'THEURT': '30',
+  'TPOURT': '40',
+  'TPEUFT': '50',
+  'EUT': 'ety',
+  '-GS': 'ion',
+  'ET': 'ete',
+  'APBS': 'ance',
+  'P-T': '.'
 };
 
-let innfixDict = {
+let infixDict = {
   'A*U': 'a',
   'AO*': 'o',
+  'TAEPB': ' ',
+  'STKAOER': ':',
 };
 
-function deconstructWord(word, strokes) {
-  if(strokes.length < 2) return word;
+let literalVariants = [
+  [/^Y/, ''],
+  [/^Y/, 'I'],
+  [/^YI/, 'Y'],
+  [/S/, 'C'],
+  [/G/, 'ING'],
+  [/K/, 'C'],
+  [/F/, 'V'],
+  [/F/, 'VE'],
+  [/F/, 'S'],
+  [/HR/, 'L'],
+  [/IE/, 'I'],
+  [/IE/, 'IGH'],
+  [/IE/, 'Y'],
+  [/AE/, 'A'],
+  [/AE/, 'AY'],
+  [/EE/, 'E'],
+  [/OE/, 'O'],
+  [/UE/, 'U'],
+  [/UE/, 'EW'],
+  [/UE/, 'UO'],
+  [/AU/, 'AW'],
+  [/OU/, 'OW'],
+  [/I/, 'Y'],
+  [/D/, 'ED'],
+  [/(A|E|I|I|O|U)E(\w)/, '$1$2E'],
+  [/Y(\w)/, 'Y$1E'],
+  [/Z$/, 'S'],
+  [/Z$/, 'SE'],
+  [/Z$/, 'ZE'],
+];
+
+function toLiteral(steno) {
+  let ans = steno
+  .replace('STKPW','Z')
+  .replace('TKPW','G')
+  .replace('SKWR','J')
+  .replace('PBLG','J')
+  .replace('BGS','X')
+  .replace('TPH','N')
+  .replace('KWR','Y')
+  .replace('PW','B')
+  .replace('TK','D')
+  .replace('TP','F')
+  .replace('BG','K')
+  .replace('PH','M')
+  .replace('PL','M')
+  .replace('PB','N')
+  .replace('SR','V')
+  .replace('KP','X')
+  .replace('KR','C')
+  .replace('KW','Q')
+  .replace('QE','QUE')
+  .replace(/[^\w]/g,'')
+  .replace('EU','I')
+  .replace('AOI','IE')
+  .replace('AI','AE')
+  .replace('AOE','EE')
+  .replace('AOU','UE')
+  .replace('AO','OO');
+  return ans;
+}
+
+function getLiteralVariants(steno) {
+  let variants = [];
+  let literal = toLiteral(steno);
+  let workableVariants = literalVariants.filter(a => a[0].test(literal));
+
+  for(let i = 0; i < 1 << workableVariants.length; i++) {
+    let ans = literal;
+    for(let j = 0; j < workableVariants.length; j ++) {
+      if(i & 1 << j) {
+        ans = ans.replace(...workableVariants[j]);
+      }
+    }
+    if(variants.indexOf(ans) < 0) {
+      variants.push(ans);
+    }
+  }
+  return variants.sort((a,b) => b.length - a.length);
+}
+
+function deconstructWord(word, withStrokes) {
+  if(withStrokes.length < 2) return word;
+
+  let strokes = withStrokes.map(s => {
+    return s.replace(/\^/g,'S');
+  });
 
   let lastStroke = strokes[strokes.length - 1];
 
@@ -251,22 +293,34 @@ function deconstructWord(word, strokes) {
     return `${start}\x00${end}`;
   }
 
-  if(suffixDict.hasOwnProperty(lastStroke)) {
-    let match = word.match(RegExp(suffixDict[lastStroke] + '$', 'i'));
-    if(match && match.index === word.length - suffixDict[lastStroke].length) {
+  // remove style stuff
+  {
+    let match = word.match(RegExp('^<\\w>', 'i'));
+    if(match) {
+      let end = deconstructWord(
+        word.slice(match.index + 3),
+        strokes
+      );
+      if(!end) return false;
+      let start = word.slice(0, match.index + 3);
+      return `${start}${end.replace(/\x00/g, `\x00${start}`)}`;
+    }
+
+    match = word.match(RegExp('</\\w>$', 'i'));
+    if(match) {
       let start = deconstructWord(
         word.slice(0, match.index),
-        strokes.slice(0, strokes.length - 1)
+        strokes
       );
       if(!start) return false;
       let end = word.slice(match.index);
-      return `${start}\x00${end}`;
+      return `${start.replace(/\x00/g,`${end}\x00`)}${end}`;
     }
   }
 
-  if(suffixDict2.hasOwnProperty(lastStroke)) {
-    let match = word.match(RegExp(suffixDict2[lastStroke] + '$', 'i'));
-    if(match && match.index === word.length - suffixDict2[lastStroke].length) {
+  if(suffixDict.hasOwnProperty(lastStroke)) {
+    let match = word.match(RegExp(suffixDict[lastStroke] + '$', 'i'));
+    if(match && match.index === word.length - suffixDict[lastStroke].length) {
       let start = deconstructWord(
         word.slice(0, match.index),
         strokes.slice(0, strokes.length - 1)
@@ -288,6 +342,99 @@ function deconstructWord(word, strokes) {
       let start = word.slice(0, match.index + prefixDict[strokes[0]].length);
       return `${start}\x00${end}`;
     }
+  }
+
+  if(suffixDict2.hasOwnProperty(lastStroke)) {
+    let match = word.match(RegExp(suffixDict2[lastStroke] + '$', 'i'));
+    if(match && match.index === word.length - suffixDict2[lastStroke].length) {
+      let start = deconstructWord(
+        word.slice(0, match.index),
+        strokes.slice(0, strokes.length - 1)
+      );
+      if(!start) return false;
+      let end = word.slice(match.index);
+      return `${start}\x00${end}`;
+    }
+  }
+
+  if(/^[0-9]+$/.test(withStrokes[0])) {
+    let match = word.match(RegExp(' *' + withStrokes[0]+' *', 'i'));
+    if(match) {
+      let end = deconstructWord(
+        word.slice(match.index + match[0].length),
+        strokes.slice(1)
+      );
+      if(!end) return false;
+      let start = word.slice(0, match.index + match[0].length);
+      return `${start}\x00${end}`;
+    }
+  }
+
+  for(let i = 1; i < strokes.length - 1; i++) {
+    if(infixDict.hasOwnProperty(strokes[i])) {
+      let match = word.match(RegExp(infixDict[strokes[i]], 'i'));
+      if(match && match.index > 0 && match.index < word.length - infixDict[strokes[i]].length) {
+        let end = deconstructWord(
+          word.slice(match.index + infixDict[strokes[i]].length),
+          strokes.slice(i + 1)
+        );
+        if(!end) return false;
+        let start = deconstructWord(
+          word.slice(0, match.index),
+          strokes.slice(0, i)
+        );
+        if(!start) return false;
+        let middle = word.slice(match.index, match.index + infixDict[strokes[i]].length);
+        return `${start}\x00${middle}\x00${end}`;
+      }
+    }
+
+    for(let literal of getLiteralVariants(strokes[i])) {
+      let match = word.match(RegExp(literal, 'i'));
+      if(match && match.index > 0 && match.index < word.length - literal.length) {
+        let end = deconstructWord(
+          word.slice(match.index + literal.length),
+          strokes.slice(i + 1)
+        );
+        if(!end) return false;
+        let start = deconstructWord(
+          word.slice(0, match.index),
+          strokes.slice(0, i)
+        );
+        if(!start) return false;
+        let middle = word.slice(match.index, match.index + literal.length);
+        return `${start}\x00${middle}\x00${end}`;
+      }
+    }
+  }
+
+  // literal translations
+  for(let literal of getLiteralVariants(strokes[0])) {
+    let match = word.match(RegExp('^'+literal, 'i'));
+    if(match) {
+      let end = deconstructWord(
+        word.slice(match.index + literal.length),
+        strokes.slice(1)
+      );
+      if(!end) return false;
+      return `${match[0]}\x00${end}`;
+    }
+  }
+
+  for(let literal of getLiteralVariants(strokes[strokes.length - 1])) {
+    match = word.match(RegExp(literal+'$', 'i'));
+    if(match) {
+      let start = deconstructWord(
+        word.slice(0, match.index),
+        strokes.slice(0, strokes.length - 1)
+      );
+      if(!start) return false;
+      return `${start}\x00${match[0]}`;
+    }
+  }
+
+  if(strokes.length === word.split('-').length) {
+    return word.replace(/-/g, '\x00-');
   }
 
   console.error(`failed:\n${word}\n${strokes.join('/')}`);
@@ -329,6 +476,8 @@ function loadLessonText(txt) {
       steno.shift();
     }
 
+    if(steno.length === 0) continue;
+
     let strokes = lines[i + 1].replace(/[\r\/]/g, '').replace(/^\s+/, '');
 
     let hadStart = false;
@@ -340,9 +489,9 @@ function loadLessonText(txt) {
       for(let stroke of startStrokes) {
         let index = strokes.indexOf(stroke + ' ');
         if(index === 0) {
-          lessonText.push((hadStart ? '/' : ' ') + line[0]);
+          lessonText.push((hadStart ? '/' : ' ') + line.replace(/^((?:<\w>)*)(.).+?((?:<\/\w>)*)$/,'$1$2$3').replace(/<\/?u>/g,''));
           lessonStrokes.push(strokes.slice(0, index + stroke.length).split(' '));
-          line = line.slice(1);
+          line = line.replace(/^((?:<\w>)*).(.+?)((?:<\/\w>)*)$/,'$1$2$3');
           strokes = strokes.slice(stroke.length + 1);
           done = false;
           hadStart = true;
@@ -361,14 +510,16 @@ function loadLessonText(txt) {
       for(let stroke of stopStrokes) {
         let index = strokes.indexOf(' ' + stroke);
         if(index > 0 && index + stroke.length + 1 === strokes.length) {
-          pushAfter.unshift([line[line.length - 1], strokes.slice(index + 1)]);
-          line = line.slice(0, line.length - 1);
+          pushAfter.unshift([line.replace(/^((?:<\w>)*).+?(.)((?:<\/\w>)*)$/,'$1$2$3').replace(/<\/?u>/g,''), strokes.slice(index+1)]);
+          line = line.replace(/^((?:<\w>)*)(.+?).((?:<\/\w>)*)$/,'$1$2$3');
           strokes = strokes.slice(0, index);
           done = false;
           break;
         }
       }
     }
+
+
 
     if(steno[0][0] === '/') {
       hadStart = true;

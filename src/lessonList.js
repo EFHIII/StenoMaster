@@ -58,4 +58,13 @@ function loadProblems() {
   sceneDivs.problems.innerHTML = txt;
 }
 
+function deleteLessons() {
+  if(!/^(y|yes)$/i.test(prompt('Are you sure you want to delete every lesson?\nYes/No').trim())) return;
+  lessons = [];
+  saveStorage();
+  updateLessonList();
+};
+
+document.getElementById('deleteLessons').addEventListener('click', deleteLessons);
+
 updateLessonList();

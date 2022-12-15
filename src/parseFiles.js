@@ -119,24 +119,38 @@ function parseFile(file) {
 function readSMFile(file, static = true) {
   let f = file;
   f = f.replace(/\r/g, '');
-  f = f.replace(/1/g, '#^');
   f = f.split('\n');
 
   let out = '';
 
   for(let line of f) {
     let txt = line.trim().split('\x00');
-    if(txt == '') continue;
+
     while(txt[txt.length - 1] == '') {
       txt.pop();
     }
 
+    if(txt.length === 0) continue;
+
     if(txt[0].indexOf('<') >= 0) {
       txt[0] = `**${txt[0]}**`;
     }
-    if(txt[0].trim().indexOf(' ') > 0) {
+
+    let strokes = txt.slice(1).join(' ');
+
+    if(txt[0].trim().indexOf(' ') > 0 &&
+      (
+        strokes.indexOf(' ') < 0 ||
+        (
+          !/ (FPLT|stpH|RBGS|OEU|OEUS|pPL|AEPL)$/.test(strokes) &&
+          !/^(OEUS|OEU|AE) /.test(strokes) &&
+          !/^\d+ \w+.?$/.test(txt[0].trim()) &&
+          !/^\w+ \d+.?$/.test(txt[0].trim())
+        )
+      )) {
       txt[0] = `_${txt[0].trim()}_`;
     }
+
     out += txt.shift();
     out += '\n';
     for(let word in txt) {
@@ -145,7 +159,6 @@ function readSMFile(file, static = true) {
     out += ' ' + txt.join(' ');
     out += '\n';
   }
-
 
   readEFHFile(out, static);
 }

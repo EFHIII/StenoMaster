@@ -4,7 +4,7 @@ outline search / word search
 toggle problem words for pyramid drill
 */
 
-let version = 0.4;
+let version = 0.5;
 let lessons = [];
 let lessonProgress = {};
 let makeSaves = true;
@@ -38,6 +38,8 @@ let recentMistake = false;
 let file;
 
 const isSteno = /^(#?[S1]?[T2]?K?[P3]?W?[H4]?R?[A5]?[O0]?[\*\-]?E?U?[F6]?R?[P7]?B?[L8]?G?[T9]?S?D?Z?\/)*(#?[S1]?[T2]?K?[P3]?W?[H4]?R?[A5]?[O0]?[\*\-]?E?U?[F6]?R?[P7]?B?[L8]?G?[T9]?S?D?Z?)$/;
+const StenoKeys = '#STKPWHRAO*EUFRPBLGTSDZ';
+const StenoNumberKeys = '#12K3W4R50*EU6R7B8G9SDZ';
 
 let text = document.getElementById('text');
 let keyboard = document.getElementById('keyboard');
@@ -90,5 +92,6 @@ function escapeHtml(unsafe) {
     .replace(/&lt;i&gt;/g, "<i>")
     .replace(/&lt;\/i&gt;/g, "</i>")
     .replace(/&lt;b&gt;/g, "<b>")
-    .replace(/&lt;\/b&gt;/g, "</b>");
+    .replace(/&lt;\/b&gt;/g, "</b>")
+    .replace(/ /g, "&nbsp;");
 }

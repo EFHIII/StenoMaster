@@ -1,7 +1,7 @@
 // #^STKPWHRAO*EUFRPBLGTSDZ
 function shortToLongSteno(str) {
   let ans = {
-    '#': false,
+    '#': /[0-9]/.test(str),
     '^': false,
     'S': false,
     'T': false,
@@ -68,6 +68,9 @@ function shortToLongSteno(str) {
       } else if(vowelNumbers.indexOf(str[i]) >= 0) {
         ans[numberTranslation[str[i]]] = true;
         at = 'end';
+      } else if(finalNumbers.indexOf(str[i]) >= 0) {
+        ans[numberTranslation[str[i]]] = true;
+        at = 'end';
       }
     } else if(vowel.indexOf(str[i]) >= 0) {
       ans[str[i]] = true;
@@ -116,7 +119,7 @@ function LongToShortSteno(str) {
     ans = ans.replace('-', '');
   }
 
-  return ans;
+  return basicToPlover(ans);
 }
 
 function stenoToStenoTape(steno) {
@@ -165,6 +168,45 @@ function stenoToStenoTape(steno) {
   return ans;
 }
 
+function stenoTapeToSteno(steno) {
+  let ans = '';
+  for(let stroke of steno) {
+    if(stroke.length < 23) {
+      stroke = ' ' + stroke;
+    }
+    if(stroke[0] === '#') {
+      stroke = ' ' +
+      ((stroke[1]+stroke[2]+stroke[4]+stroke[6]+stroke[9]+stroke[13]+stroke[15]+stroke[17]+stroke[19] === '         ') ? '#' : '') +
+      (stroke[1] === ' ' ? ' ' : '1') +
+      (stroke[2] === ' ' ? ' ' : '2') + stroke[3] +
+      (stroke[4] === ' ' ? ' ' : '3') + stroke[5] +
+      (stroke[6] === ' ' ? ' ' : '4') + stroke[7] +
+      (stroke[8] === ' ' ? ' ' : '5') +
+      (stroke[9] === ' ' ? ' ' : '0') + stroke.slice(10, 13) +
+      (stroke[13] === ' ' ? ' ' : '6') + stroke[14] +
+      (stroke[15] === ' ' ? ' ' : '7') + stroke[16] +
+      (stroke[17] === ' ' ? ' ' : '8') + stroke[18] +
+      (stroke[19] === ' ' ? ' ' : '9') + stroke.slice(20);
+    }
+
+    ans += stroke.slice(0, 13).replace(/ /g,'');
+    if(stroke.slice(13).replace(/ /g, '').length === 0) {
+      ans += ' ';
+      continue;
+    }
+    if(stroke.slice(8, 13).replace(/ /g,'').length === 0) {
+      ans += '-';
+    }
+    ans += stroke.slice(13).replace(/ /g,'') + ' ';
+  }
+  return ans.slice(0, -1);
+}
+
+function basicToPlover(steno) {
+  return (stenoTapeToSteno(stenoToStenoTape(steno.replace(/\^/g,'S')))
+  .replace(/^-([6-9])/,'$1').replace(/([1-4])-([6-9])/,'$1$2'));
+}
+
 function MasterToLongSteno(word) {
   let ans = {
     '#': false,
@@ -194,6 +236,7 @@ function MasterToLongSteno(word) {
   };
 
   let conversion = {
+    '#': '#',
     '^': '^',
     's': 'S',
     't': 'T',
@@ -219,7 +262,25 @@ function MasterToLongSteno(word) {
     'Z': '-Z',
   };
 
+  let numberTranslation = {
+    '0': 'O',
+    '1': '^',
+    '2': 'T',
+    '3': 'P',
+    '4': 'H',
+    '5': 'A',
+    '6': '-F',
+    '7': '-P',
+    '8': '-L',
+    '9': '-T',
+  };
+
   for(let char of word) {
+    if(/\d/.test(char)) {
+      ans['#'] = true;
+      ans[numberTranslation[char]] = true;
+      continue;
+    }
     if(!conversion.hasOwnProperty(char)) {
       throw (`error\nin ${word}\n${char} not convertable`);
     }

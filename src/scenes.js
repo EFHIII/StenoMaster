@@ -24,7 +24,7 @@ function changeScene(toScene) {
 }
 
 (new URL(window.location.href)).searchParams.forEach((value, name) => {
-  let lessonNames = lessons.map(a => a.name);
+  let lessonNames = lessons.map(a => a.name.replace(/-/g,' '));
   switch(name) {
     case 'problems':
       if(value.toLowerCase() === 'true') {

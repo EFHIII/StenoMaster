@@ -39,6 +39,12 @@ function logWord(wordA, mistake) {
 
 function saveStorage() {
   if(!makeSaves) return;
+  for(let lesson in lessonProgress) {
+    if(!lessonProgress[lesson].completed) {
+      delete lessonProgress[lesson];
+    }
+  }
+
   let storage = {
     lessons: lessons,
     lessonProgress: lessonProgress,
@@ -78,9 +84,9 @@ function loadStorage() {
       }
       if(storageVersion < version) {
         // fix storage
-        lessons = [];
-        lessonProgress = {};
-        problemWords = {};
+        for(let lesson in lessonProgress) {
+          lessonProgress[lesson].fastest = Math.round(lessonProgress[lesson].fastest * 9) / 10;
+        }
       }
     } catch (e) {
       console.error(e);
