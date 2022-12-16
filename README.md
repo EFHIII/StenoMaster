@@ -1,4 +1,4 @@
-# Test
+# StenoMasterOnline
 
 This is an experimental Steno practice program. To use the program, you need a [Plover](https://www.openstenoproject.org/plover/) compatible stenotype and [Plover](https://www.openstenoproject.org/plover/). In Plover, disable all dictionaries when using this program. The program is available at <https://efhiii.github.io/test>
 
