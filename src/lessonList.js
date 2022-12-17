@@ -1,11 +1,11 @@
 function updateLessonList() {
-  lessonList.innerHTML = '';
+  let updated = '';
   for(let lesson of lessons) {
     let tried = lessonProgress.hasOwnProperty(lesson.name);
     let completed = tried ? lessonProgress[lesson.name].completed : 0;
     let repeated = completed >= lesson.repetitions;
     let accurately = tried ? lessonProgress[lesson.name].accurateCompleted : 0;
-    lessonList.innerHTML +=
+    updated +=
       `<span class='lessonLinkInfo' ${repeated && accurately > 0 ? `style='color:green'` : ``}>` +
       `${repeated ? `${accurately}` : `${completed}/${lesson.repetitions}`}` +
       `&nbsp;</span><span class='lessonLinkName'>` +
@@ -23,6 +23,7 @@ function updateLessonList() {
       `${tried ? `<span class='lessonLinkBest'> ${lessonProgress[lesson.name].fastest} WPM</span>` : ''}` +
       `</span><br>`;
   }
+  lessonList.innerHTML = updated;
 }
 
 function loadProblems() {
