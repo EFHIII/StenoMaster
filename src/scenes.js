@@ -24,7 +24,7 @@ function changeScene(toScene) {
 }
 
 (new URL(window.location.href)).searchParams.forEach((value, name) => {
-  let lessonNames = lessons.map(a => a.name.replace(/-/g,' '));
+  let lessonNames = lessons.map(a => a.name.replace(/-/g, ' '));
   switch(name) {
     case 'problems':
       if(value.toLowerCase() === 'true') {
@@ -89,6 +89,33 @@ document.getElementById('repetitions').addEventListener('change', (event) => {
 
 document.getElementById('atAccuracy').addEventListener('change', (event) => {
   let val = parseInt(event.target.value);
+  if(val >= 1 && val <= 100) {
+    atAccuracy = val;
+    updateLessonList();
+  }
+});
+
+document.getElementById('accuracyTarget').addEventListener('blur', (event) => {
+  let val = Math.max(96, Math.min(100, parseInt(event.target.value)));
+  if(event.target.value != val) event.target.value = val
+  if(val >= 96 && val <= 100) {
+    accuracyTarget = val;
+    updateLessonList();
+  }
+});
+
+document.getElementById('repetitions').addEventListener('blur', (event) => {
+  let val = Math.max(1, Math.min(100, parseInt(event.target.value)));
+  if(event.target.value != val) event.target.value = val
+  if(val >= 1 && val <= 100) {
+    repetitions = val;
+    updateLessonList();
+  }
+});
+
+document.getElementById('atAccuracy').addEventListener('blur', (event) => {
+  let val = Math.max(1, Math.min(100, parseInt(event.target.value)));
+  if(event.target.value != val) event.target.value = val
   if(val >= 1 && val <= 100) {
     atAccuracy = val;
     updateLessonList();
