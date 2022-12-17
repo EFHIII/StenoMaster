@@ -134,11 +134,8 @@ input[type=number] {
   display: none;
 }
 
-#lessonList {
-  z-index: -1;
-}
-
 .lessonLinkInfo {
+  z-index: -1;
   display: inline-block;
   text-align: Right;
   color: grey;
