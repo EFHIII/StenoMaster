@@ -95,5 +95,6 @@ function escapeHtml(unsafe) {
     .replace(/&lt;\/b&gt;/g, "</b>")
     .replace(/ /g, "&nbsp;")
     .replace(/&lt;r&gt;/g, "<span class='phrase'>\u202e")
-    .replace(/&lt;\/r&gt;/g, "\u202c</span>");
+    .replace(/&lt;\/r&gt;/g, "\u202c</span>")
+    .replace(/\\n/g, "<span style='color:grey'>&crarr;</span></span><br><span class='phrase'>");
 }

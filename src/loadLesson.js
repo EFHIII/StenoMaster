@@ -250,6 +250,7 @@ function getLiteralVariants(steno) {
 
 function deconstructWord(word, withStrokes) {
   if(withStrokes.length < 2) return word;
+  if(/\x00/.test(word) && withStrokes.length === word.match(/\x00/g).length + 1) return word;
 
   let strokes = withStrokes.map(s => {
     return s.replace(/\^/g,'S');
@@ -556,8 +557,6 @@ function loadLessonText(txt) {
         }
       }
     }
-
-
 
     if(steno[0][0] === '/') {
       hadStart = true;

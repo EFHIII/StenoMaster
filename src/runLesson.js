@@ -18,6 +18,11 @@ function updateProgressText() {
     lessons[onLesson].name;
 }
 
+function fixAddedSpans(txt, typed) {
+  if(!typed) return escapeHtml(txt);
+  if(typed) return escapeHtml(txt).replace(/class='phrase'>/g, "class='phrase typed'>");
+}
+
 function drawtoLessonText() {
   let textHTML = '';
   let open = false;
@@ -57,15 +62,15 @@ function drawtoLessonText() {
         }
       }
 
-      wordParts = wordParts.map(a => a.replace(/<\/?r>/g,''))
+      wordParts = wordParts.map(a => a.replace(/<\/?r>/g,''));
 
       textHTML += `<span id='lesson-${i}'>`;
       for(let part = 0; part < wordParts.length; part++) {
-        textHTML += `<span class='phrase${lessonStroke > order[part] ? ' typed' : ''}'>${escapeHtml(wordParts[order[part]])}</span>`;
+        textHTML += `<span class='phrase${lessonStroke > order[part] ? ' typed' : ''}'>${fixAddedSpans(wordParts[order[part]], lessonStroke > order[part])}</span>`;
       }
       textHTML += `</span>`;
     } else {
-      textHTML += `<span class='phrase${lessonPhrase > i ? ' typed' : ''}' id = 'lesson-${i}'>${escapeHtml(lessonText[i].replace(/\x00/g, '').slice(1))}</span>`;
+      textHTML += `<span class='phrase${lessonPhrase > i ? ' typed' : ''}' id = 'lesson-${i}'>${fixAddedSpans(lessonText[i].replace(/\x00/g, '').slice(1), lessonPhrase > i)}</span>`;
     }
     if(open && i < lessonText.length - 1 && lessonText[i + 1][0] === ' ') {
       textHTML += `</span>`;
