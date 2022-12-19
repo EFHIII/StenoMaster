@@ -151,12 +151,16 @@ let literalVariants = [
   [/^Y/, ''],
   [/^Y/, 'I'],
   [/^YI/, 'Y'],
+  [/CK/, 'K'],
+  [/CK/, 'C'],
+  [/SS/, 'S'],
   [/S/, 'C'],
+  [/SS/, 'C'],
   [/G/, 'ING'],
-  [/K/, 'C'],
   [/F/, 'V'],
   [/F/, 'VE'],
   [/F/, 'S'],
+  [/LL/, 'L'],
   [/HR/, 'L'],
   [/IE/, 'I'],
   [/IE/, 'IGH'],
@@ -225,7 +229,10 @@ function toLiteral(steno) {
   .replace('AI','AE')
   .replace('AOE','EE')
   .replace('AOU','UE')
-  .replace('AO','OO');
+  .replace('AO','OO')
+  .replace(/S(D?Z?)$/,'SS$1')
+  .replace(/L(G?T?S?D?Z?)$/,'LL$1')
+  .replace('K','CK');
   return ans;
 }
 
