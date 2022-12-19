@@ -263,6 +263,7 @@ function keydown(event) {
   if(event.key === 'PageUp') {
     onLesson = (onLesson + lessons.length - 1) % lessons.length;
     file = null;
+    progressStatus = [0, 0];
     loadLesson(onLesson);
     return;
   }
@@ -270,6 +271,7 @@ function keydown(event) {
   if(event.key === 'PageDown') {
     onLesson = (onLesson + 1) % lessons.length;
     file = null;
+    progressStatus = [0, 0];
     loadLesson(onLesson);
     return;
   }
