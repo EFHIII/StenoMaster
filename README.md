@@ -10,7 +10,7 @@ Within the program, you can do steno lessons. When doing a lesson, you use a ste
 
 The lines of text alternate between being the text that is shown and the steno strokes to produce that text. There is no inherent dictionary.
 
-To produce the steno strokes, just like when using the program itself, it is easiest to use Plover with all dictionaries disabled. When Plover has no dictionaries enabled, it produces RAW steno strokes. (asterisk is still 'undo last stroke')
+You can use [LessonGen](https://github.com/EFHIII/LessonGen) to easily generate lessons from Plover logs, making use of your own Dictionary.
 
 ## How it works
 
