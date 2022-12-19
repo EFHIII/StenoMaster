@@ -154,7 +154,7 @@ let literalVariants = [
   [/CK/, 'K'],
   [/CK/, 'C'],
   [/SS/, 'S'],
-  [/S/, 'C'],
+  [/S(?=[^S]|$)/, 'C'],
   [/SS/, 'C'],
   [/G/, 'ING'],
   [/F/, 'V'],
