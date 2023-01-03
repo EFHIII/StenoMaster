@@ -116,15 +116,22 @@ function parseFile(file) {
   reader.readAsText(file);
 }
 
+let qq;
+
 function readSMFile(file, static = true) {
   let f = file;
+  qq = file;
   f = f.replace(/\r/g, '');
   f = f.split('\n');
 
   let out = '';
 
   for(let line of f) {
-    let txt = line.trim().split('\x00');
+    let txt = line.split('\x00');
+
+    for(let t in txt) {
+      txt[t] = txt[t].trim();
+    }
 
     while(txt[txt.length - 1] == '') {
       txt.pop();

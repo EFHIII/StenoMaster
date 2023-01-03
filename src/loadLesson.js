@@ -47,6 +47,7 @@ let prefixDict = {
   'TPHO': 'no ',
   'AUL': 'all ',
   'KWRUR': 'your',
+  'THEU': 'think',
 };
 
 let suffixDict = {
@@ -169,6 +170,7 @@ let literalVariants = [
   [/AE/, 'AY'],
   [/EE/, 'E'],
   [/OE/, 'O'],
+  [/OE/, 'OW'],
   [/UE/, 'U'],
   [/UE/, 'EW'],
   [/UE/, 'UO'],
