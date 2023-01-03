@@ -130,7 +130,7 @@ function readSMFile(file, static = true) {
     let txt = line.split('\x00');
 
     for(let t in txt) {
-      txt[t] = txt[t].trim();
+      txt[t] = txt[t].trim().replace(/([a-z0-9])\s+([a-z0-9])/gi,'$1 $2');
     }
 
     while(txt[txt.length - 1] == '') {
