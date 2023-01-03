@@ -127,7 +127,16 @@ function readSMFile(file, static = true) {
   let out = '';
 
   for(let line of f) {
-    let txt = line.split('\x00');
+
+    console.log(line);
+
+    let txt = line.trim().replace('beneficial\x00pWEPB\x00tpEURBL', 'beneficial\x00pWEPB\x00EF\x00EURBL');
+    txt = txt.replace('apparent\x00A\x00pAEURPBT', 'apparent\x00A\x00pAEUR\x00EPBT');
+
+    console.log(txt);
+
+
+    txt = txt.split('\x00');
 
     for(let t in txt) {
       txt[t] = txt[t].trim().replace(/([a-z0-9])\s+([a-z0-9])/gi,'$1 $2');

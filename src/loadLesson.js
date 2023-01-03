@@ -143,6 +143,7 @@ let suffixDict2 = {
 };
 
 let infixDict = {
+  'AEZ': "'s",
   'A*U': 'a',
   'AO*': 'o',
   'STKAOER': ':',
@@ -157,6 +158,7 @@ let literalVariants = [
   [/SS/, 'S'],
   [/S(?=[^S]|$)/, 'C'],
   [/SS/, 'C'],
+  [/SS/, 'SE'],
   [/G/, 'ING'],
   [/F/, 'V'],
   [/F/, 'VE'],
@@ -184,6 +186,7 @@ let literalVariants = [
   [/Z$/, 'S'],
   [/Z$/, 'SE'],
   [/Z$/, 'ZE'],
+  [/ERJ$/, 'THER']
 ];
 
 let numberDict = {
