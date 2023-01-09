@@ -128,12 +128,12 @@ function readSMFile(file, static = true) {
 
   for(let line of f) {
 
-    console.log(line);
+    //console.log(line);
 
     let txt = line.trim().replace('beneficial\x00pWEPB\x00tpEURBL', 'beneficial\x00pWEPB\x00EF\x00EURBL');
     txt = txt.replace('apparent\x00A\x00pAEURPBT', 'apparent\x00A\x00pAEUR\x00EPBT');
 
-    console.log(txt);
+    //console.log(txt);
 
 
     txt = txt.split('\x00');
@@ -154,16 +154,20 @@ function readSMFile(file, static = true) {
 
     let strokes = txt.slice(1).join(' ');
 
-    if(txt[0].trim().indexOf(' ') > 0 &&
-      (
-        strokes.indexOf(' ') < 0 ||
-        (
-          !/ (FPLT|stpH|RBGS|OEU|OEUS|pPL|AEPL)$/.test(strokes) &&
-          !/^(OEUS|OEU|AE) /.test(strokes) &&
-          !/^\d+ \w+.?$/.test(txt[0].trim()) &&
-          !/^\w+ \d+.?$/.test(txt[0].trim())
-        )
-      )) {
+    console.log(txt[0].trim());
+
+    if(txt[0].trim().indexOf(' ') > 0
+    // &&
+    //  (
+        //strokes.indexOf(' ') < 0 ||
+        //(
+        //  !/ (FPLT|stpH|RBGS|OEU|OEUS|pPL|AEPL)$/.test(strokes) &&
+        //  !/^(OEUS|OEU|AE) /.test(strokes) &&
+        //  !/^\d+ \w+.?$/.test(txt[0].trim()) &&
+        //  !/^\w+ \d+.?$/.test(txt[0].trim())
+        //)
+    //  )
+    ) {
       txt[0] = `_${txt[0].trim()}_`;
     }
 
