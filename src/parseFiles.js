@@ -132,6 +132,7 @@ function readSMFile(file, static = true) {
 
     let txt = line.trim().replace('beneficial\x00pWEPB\x00tpEURBL', 'beneficial\x00pWEPB\x00EF\x00EURBL');
     txt = txt.replace('apparent\x00A\x00pAEURPBT', 'apparent\x00A\x00pAEUR\x00EPBT');
+    txt = txt.replace('popular\x00pOP\x00HrAR', 'popular\x00pOP\x00KWrAOUL\x00AR');
 
     //console.log(txt);
 
