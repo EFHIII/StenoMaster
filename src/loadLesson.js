@@ -75,6 +75,7 @@ let suffixDict = {
   'KWRAEUR': 'iary',
   'EUBLT': 'ibility',
   'EUBL': 'ible',
+  'KWREU': 'y',
   'KWREUZ': 'ies',
   'EULT': 'ility',
   'EUGS': 'ition',

@@ -156,7 +156,7 @@ function readSMFile(file, static = true) {
 
     console.log(txt[0].trim());
 
-    if(txt[0].trim().indexOf(' ') > 0
+    if(txt[0].trim().indexOf(' ') > 0 && !/[0-9]/.test(txt[0])
     // &&
     //  (
         //strokes.indexOf(' ') < 0 ||
