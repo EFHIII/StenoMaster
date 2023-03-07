@@ -1,8 +1,10 @@
-# StenoMaster
+# StenoMaster (public version)
 
-This is a Steno practice program. To use the program, you need a [Plover](https://www.openstenoproject.org/plover/) compatible stenotype and [Plover](https://www.openstenoproject.org/plover/). In Plover, disable all dictionaries when using this program. The program is available at <https://stenomaster.southcoastcollege.edu/>
+This is a Steno practice program. To use the program, you need a [Plover](https://www.openstenoproject.org/plover/) compatible stenotype and [Plover](https://www.openstenoproject.org/plover/). In Plover, disable all dictionaries when using this program. The program is available at <https://efhiii.github.io/StenoMaster/>
 
 ## About the program
+
+This is a public version of a program developed for South Coast College. The only difference is that this version doesn't come with any lessons.
 
 Within the program, you can do steno lessons. When doing a lesson, you use a stenotype to type the text shown. If a mistake is made, the intended stroke(s) will be shown until you correctly stroke the word/phrase. If `Auto advance` is enabled, you will be progressed to the next lesson after completing the requisite number of repetitions with at least the requisite number of times at or above the requisite accuracy.
 
