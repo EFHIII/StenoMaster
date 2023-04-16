@@ -24,7 +24,7 @@ function changeScene(toScene) {
 }
 
 (new URL(window.location.href)).searchParams.forEach((value, name) => {
-  let lessonNames = lessons.map(a => a.name.replace(/-/g, ' '));
+  let lessonNames = Object.keys(lessons).map(a=>lessons[a].map(a=>a.name.replace(/-/g, ' ')));
   switch(name) {
     case 'problems':
       if(value.toLowerCase() === 'true') {
@@ -37,8 +37,15 @@ function changeScene(toScene) {
       }
       break;
     case 'lesson':
-      if(lessonNames.indexOf(value.replace(/-/g, ' ')) >= 0) {
-        onLesson = lessonNames.indexOf(value.replace(/-/g, ' '));
+      if(lessonNames.flat().indexOf(value.replace(/-/g, ' ')) >= 0) {
+        let index = lessonNames.flat().indexOf(value.replace(/-/g, ' '));
+        let at = 0;
+        while(index >= lessonNames[at].length) {
+          index -= lessonNames[at].length;
+          at++;
+        }
+        onFolder = Object.keys(lessons)[at];
+        onLesson = lessonNames[Object.keys(lessons).indexOf(onFolder)].indexOf(value.replace(/-/g, ' '));
         scene = 'lesson';
       }
       break;

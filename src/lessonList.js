@@ -1,29 +1,64 @@
+let mc;
+
+function toggleFolder(e) {
+  console.log(e.target);
+  let at = e.target;
+  mc = at;
+  if(at.classList[0] === 'deleteFolder') {
+    while(at.classList[0] !== 'folder') {
+      at = at.parentElement;
+    }
+    delete lessons[at.dataset.name];
+    saveStorage();
+    at.parentElement.remove();
+    return;
+  }
+  while(at.classList[0] !== 'folder') {
+    at = at.parentElement;
+  }
+  let visible = at.parentElement.children[1].style.display === '';
+  at.children[0].innerText = visible ? '▸' : '▾';
+  at.parentElement.children[1].style.display = visible ? 'none' : '';
+}
+
 function updateLessonList() {
   let updated = '';
-  for(let lesson of lessons) {
-    let tried = lessonProgress.hasOwnProperty(lesson.name);
-    let completed = tried ? lessonProgress[lesson.name].completed : 0;
-    let repeated = completed >= lesson.repetitions;
-    let accurately = tried ? lessonProgress[lesson.name].accurateCompleted : 0;
+  for(let folderName in lessons) {
+    let folder = lessons[folderName];
     updated +=
-      `<span class='lessonLinkInfo' ${repeated && accurately > 0 ? `style='color:green'` : ``}>` +
-      `${repeated ? `${accurately}` : `${completed}/${lesson.repetitions}`}` +
-      `&nbsp;</span><span class='lessonLinkName'>` +
-      `<a class='lessonLink' href='?lesson=` +
-      lesson.name.replace(/ /g, '-') +
-      (
-        autoAdvance ?
-        (repetitions === 10 ? '' : '&repetitions=' + repetitions) +
-        (accuracyTarget === 96 ? '' : '&accuracy=' + accuracyTarget) +
-        (atAccuracy === 1 ? '' : '&atAccuracy=' + atAccuracy) :
-        '&auto-advance=false'
-      ) +
-      `'>` +
-      `${lesson.name}</a> ` +
-      `${tried ? `<span class='lessonLinkBest'> ${lessonProgress[lesson.name].fastest} WPM</span>` : ''}` +
-      `</span><br>`;
+      `<div>
+        <span class='folder' data-name='${folderName}'><span class='colapse'>▾</span>${folderName} <span class='deleteFolder'>✖</span></span>
+      <div>`;
+    for(let lesson of folder) {
+      let tried = lessonProgress.hasOwnProperty(lesson.name);
+      let completed = tried ? lessonProgress[lesson.name].completed : 0;
+      let repeated = completed >= lesson.repetitions;
+      let accurately = tried ? lessonProgress[lesson.name].accurateCompleted : 0;
+      updated +=
+        `<span class='lessonLinkInfo' ${repeated && accurately > 0 ? `style='color:green'` : ``}>` +
+        `${repeated ? `${accurately}` : `${completed}/${lesson.repetitions}`}` +
+        `&nbsp;</span><span class='lessonLinkName'>` +
+        `<a class='lessonLink' href='?lesson=` +
+        lesson.name.replace(/ /g, '-') +
+        (
+          autoAdvance ?
+          (repetitions === 10 ? '' : '&repetitions=' + repetitions) +
+          (accuracyTarget === 96 ? '' : '&accuracy=' + accuracyTarget) +
+          (atAccuracy === 1 ? '' : '&atAccuracy=' + atAccuracy) :
+          '&auto-advance=false'
+        ) +
+        `'>` +
+        `${lesson.name}</a> ` +
+        `${tried ? `<span class='lessonLinkBest'> ${lessonProgress[lesson.name].fastest} WPM</span>` : ''}` +
+        `</span><br>`;
+    }
+    updated += `</div></div>`;
   }
   lessonList.innerHTML = updated;
+  document.querySelectorAll('.folder').forEach(el => el.addEventListener('click', toggleFolder));
+  if(Object.keys(lessons).length > 1 && Object.keys(lessons).map(a=>lessons[a].length).reduce((a,b)=>a+b) > 20) {
+    document.querySelectorAll('.folder').forEach(el => el.click());
+  }
 }
 
 function loadProblems() {
@@ -61,7 +96,7 @@ function loadProblems() {
 
 function deleteLessons() {
   if(!/^(y|yes)$/i.test(prompt('Are you sure you want to delete every lesson?\nYes/No').trim())) return;
-  lessons = [];
+  lessons = {};
   saveStorage();
   updateLessonList();
 };

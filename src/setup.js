@@ -4,8 +4,8 @@ outline search / word search
 toggle problem words for pyramid drill
 */
 
-let version = 0.5;
-let lessons = [];
+let version = 0.6;
+let lessons = {};
 let lessonProgress = {};
 let makeSaves = true;
 
@@ -13,6 +13,7 @@ let storageName = 'EFHIII_SM';
 
 let autoAdvance = true;
 let onLesson = -1;
+let onFolder = -1;
 let scene = 'lessonSelect';
 
 let repetitions = 10;
@@ -82,6 +83,9 @@ function getFile(file, callback) {
 
 function escapeHtml(unsafe) {
   return unsafe
+    .replace(/%2F/g, "/")
+    .replace(/%3A/g, ":")
+    .replace(/%3F/g, "?")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")

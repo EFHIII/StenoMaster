@@ -162,8 +162,31 @@ a {
   text-decoration: none;
 }
 
+.colapse {
+  color: grey;
+}
+
+.folder {
+  font-size: 2em;
+}
+
+.folder:hover {
+  background-color: #333;
+  padding: 0.125em;
+  border-radius: 0.125em;
+  cursor: pointer;
+}
+
 .lessonLink {
   font-size: 2em;
+}
+
+.deleteFolder {
+  color: grey;
+}
+
+.deleteFolder:hover {
+  color: red;
 }
 
 .deleteLessons {

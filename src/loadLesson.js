@@ -613,6 +613,6 @@ function loadLesson(id) {
     loadLessonText(file);
     return;
   }
-  onLesson = id % lessons.length;
-  getFile(lessons[onLesson].url, gotFile);
+  onLesson = id % lessons[onFolder].length;
+  getFile(lessons[onFolder][onLesson].url, gotFile);
 }

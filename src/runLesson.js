@@ -1,21 +1,21 @@
 function updateProgressText() {
-  if(!lessonProgress.hasOwnProperty(lessons[onLesson].name)) {
-    lessonProgress[lessons[onLesson].name] = {
+  if(!lessonProgress.hasOwnProperty(lessons[onFolder][onLesson].name)) {
+    lessonProgress[lessons[onFolder][onLesson].name] = {
       completed: 0,
       fastest: 0,
       accurateCompleted: 0
     };
   }
   progressDiv.innerHTML = autoAdvance ?
-    `${lessons[onLesson].name} ` +
+    `${lessons[onFolder][onLesson].name} ` +
     (
-      lessons[onLesson].repetitions - lessonProgress[lessons[onLesson].name].completed > repetitions - progressStatus[0] ?
-      `<span style='color:white'>${lessonProgress[lessons[onLesson].name].completed}/${lessons[onLesson].repetitions}</span> ` :
+      lessons[onFolder][onLesson].repetitions - lessonProgress[lessons[onFolder][onLesson].name].completed > repetitions - progressStatus[0] ?
+      `<span style='color:white'>${lessonProgress[lessons[onFolder][onLesson].name].completed}/${lessons[onFolder][onLesson].repetitions}</span> ` :
       `<span style='color:white'>${progressStatus[0]}/${repetitions}</span> `
     ) +
     `with <span style='color:white'>${progressStatus[1]}/${atAccuracy}</span>` +
     ` at ${accuracyTarget}%` :
-    lessons[onLesson].name;
+    lessons[onFolder][onLesson].name;
 }
 
 function fixAddedSpans(txt, typed) {
@@ -116,16 +116,16 @@ function updateStats() {
     continuePyramid();
   } else if(onLesson < 0) {
 
-  } else if(lessonProgress.hasOwnProperty(lessons[onLesson].name)) {
-    lessonProgress[lessons[onLesson].name] = {
-      completed: lessonProgress[lessons[onLesson].name].completed + 1,
-      fastest: (strokes - mistakes) / strokes >= 0.96 ? Math.max(lessonProgress[lessons[onLesson].name].fastest, wpm) : lessonProgress[lessons[onLesson].name].fastest,
-      accurateCompleted: lessonProgress[lessons[onLesson].name].accurateCompleted +
+  } else if(lessonProgress.hasOwnProperty(lessons[onFolder][onLesson].name)) {
+    lessonProgress[lessons[onFolder][onLesson].name] = {
+      completed: lessonProgress[lessons[onFolder][onLesson].name].completed + 1,
+      fastest: (strokes - mistakes) / strokes >= 0.96 ? Math.max(lessonProgress[lessons[onFolder][onLesson].name].fastest, wpm) : lessonProgress[lessons[onFolder][onLesson].name].fastest,
+      accurateCompleted: lessonProgress[lessons[onFolder][onLesson].name].accurateCompleted +
         ((strokes - mistakes) / strokes >= 0.96 ? 1 : 0)
     };
     updateProgressText();
   } else {
-    lessonProgress[lessons[onLesson].name] = {
+    lessonProgress[lessons[onFolder][onLesson].name] = {
       completed: 1,
       fastest: wpm,
       accurateCompleted: (strokes - mistakes) / strokes >= 0.96
@@ -136,7 +136,7 @@ function updateStats() {
   saveStorage();
 
   if(autoAdvance && progressStatus[0] >= repetitions && progressStatus[1] >= atAccuracy &&
-    lessonProgress[lessons[onLesson].name].completed >= lessons[onLesson].repetitions) {
+    lessonProgress[lessons[onFolder][onLesson].name].completed >= lessons[onFolder][onLesson].repetitions) {
     onLesson++;
     file = null;
     progressStatus = [0, 0];
@@ -261,7 +261,7 @@ function keydown(event) {
   }
 
   if(event.key === 'PageUp') {
-    onLesson = (onLesson + lessons.length - 1) % lessons.length;
+    onLesson = (onLesson + lessons[onFolder].length - 1) % lessons[onFolder].length;
     file = null;
     progressStatus = [0, 0];
     loadLesson(onLesson);
@@ -269,7 +269,7 @@ function keydown(event) {
   }
 
   if(event.key === 'PageDown') {
-    onLesson = (onLesson + 1) % lessons.length;
+    onLesson = (onLesson + 1) % lessons[onFolder].length;
     file = null;
     progressStatus = [0, 0];
     loadLesson(onLesson);

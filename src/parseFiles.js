@@ -81,16 +81,71 @@ function generatePyramid() {
   continuePyramid();
 }
 
+function validate(json, schema) {
+  switch(typeof json) {
+    case "object":
+      if(Array.isArray(json)) {
+        if(!Array.isArray(schema)) {
+          return false;
+        } else {
+          for(let i = 0; i < json.length; i++) {
+            if(!validate(json[i], schema[0])) {
+              return false;
+            }
+          }
+          return true;
+        }
+      } else {
+        if(Array.isArray(schema)) {
+          return false;
+        } else {
+          for(let key in schema) {
+            if(!json.hasOwnProperty(key) || !validate(json[key], schema[key])) {
+              return false;
+            }
+          }
+          return true;
+        }
+      }
+      break;
+    case "string":
+      if(schema instanceof(RegExp)) {
+        return schema.test(json);
+      }
+      return schema === "string";
+      break;
+    case "number":
+      return schema === "number";
+      break;
+    default:
+      return false;
+  }
+}
+
+let fl;
+
 function parseFile(file) {
   //read the file
   const reader = new FileReader()
   reader.onload = function(e) {
-    if(e.target.result[0] === '[') {
+    if(/^[\[\{]/.test(e.target.result[0])) {
       try {
         let newLessons = JSON.parse(e.target.result);
-        for(let lesson of newLessons) {
-          if(lessons.map(JSON.stringify).indexOf(JSON.stringify(lesson)) < 0) {
-            lessons.push(lesson);
+        if(validate(newLessons, [{name:"string", url: "string", repetitions: "number"}])) {
+          let folderName = escapeHtml(decodeURI(file.name.replace(/\..+/, ''))).replace(/&nbsp;/g, ' ');
+          if(!lessons.hasOwnProperty(folderName)) {
+            lessons[folderName] = [];
+          }
+          let lessonNames = Object.keys(lessons).map(a=>lessons[a].map(a=>a.name.replace(/-/g, ' '))).flat();
+          for(let lesson of newLessons) {
+            if(lessons[folderName].map(JSON.stringify).indexOf(JSON.stringify(lesson)) < 0) {
+              let n = 1;
+              let baseName = lesson.name;
+              while(lessonNames.indexOf(lesson.name.replace(/-/g, ' ')) >= 0) {
+                lesson.name = baseName + ' ' + n++;
+              }
+              lessons[folderName].push(lesson);
+            }
           }
         }
         updateLessonList();
@@ -103,10 +158,10 @@ function parseFile(file) {
     }
     makeSaves = false;
     onLesson = 0;
-    lessons.unshift({
-      name: file.name.replace(/\..+/, ''),
+    lessons[0]=[{
+      name: escapeHtml(decodeURI(file.name.replace(/\..+/, ''))),
       repetitions: 10
-    });
+    }];
     if(e.target.result.indexOf('\x00') > 0) {
       readSMFile(e.target.result);
     } else {
@@ -140,7 +195,7 @@ function readSMFile(file, static = true) {
     txt = txt.split('\x00');
 
     for(let t in txt) {
-      txt[t] = txt[t].trim().replace(/([a-z0-9])\s+([a-z0-9])/gi,'$1 $2');
+      txt[t] = txt[t].trim().replace(/([a-z0-9])\s+([a-z0-9])/gi, '$1 $2');
     }
 
     while(txt[txt.length - 1] == '') {
@@ -158,16 +213,16 @@ function readSMFile(file, static = true) {
     console.log(txt[0].trim());
 
     if(txt[0].trim().indexOf(' ') > 0 && !/[0-9]/.test(txt[0])
-    // &&
-    //  (
-        //strokes.indexOf(' ') < 0 ||
-        //(
-        //  !/ (FPLT|stpH|RBGS|OEU|OEUS|pPL|AEPL)$/.test(strokes) &&
-        //  !/^(OEUS|OEU|AE) /.test(strokes) &&
-        //  !/^\d+ \w+.?$/.test(txt[0].trim()) &&
-        //  !/^\w+ \d+.?$/.test(txt[0].trim())
-        //)
-    //  )
+      // &&
+      //  (
+      //strokes.indexOf(' ') < 0 ||
+      //(
+      //  !/ (FPLT|stpH|RBGS|OEU|OEUS|pPL|AEPL)$/.test(strokes) &&
+      //  !/^(OEUS|OEU|AE) /.test(strokes) &&
+      //  !/^\d+ \w+.?$/.test(txt[0].trim()) &&
+      //  !/^\w+ \d+.?$/.test(txt[0].trim())
+      //)
+      //  )
     ) {
       txt[0] = `_${txt[0].trim()}_`;
     }

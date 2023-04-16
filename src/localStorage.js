@@ -51,7 +51,9 @@ function saveStorage() {
     problemWords: problemWords,
     version: version,
   };
-  //console.log(JSON.stringify(storage));
+
+  console.log(storage.lessons);
+  console.log(JSON.stringify(storage));
   setStorage(storageName, JSON.stringify(storage));
 }
 
@@ -84,9 +86,7 @@ function loadStorage() {
       }
       if(storageVersion < version) {
         // fix storage
-        for(let lesson in lessonProgress) {
-          lessonProgress[lesson].fastest = Math.round(lessonProgress[lesson].fastest * 9) / 10;
-        }
+        lessons = {};
       }
     } catch (e) {
       console.error(e);
