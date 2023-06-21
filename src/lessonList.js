@@ -44,7 +44,7 @@ function updateLessonList() {
           autoAdvance ?
           (repetitions === 10 ? '' : '&repetitions=' + repetitions) +
           (accuracyTarget === 96 ? '' : '&accuracy=' + accuracyTarget) +
-          (atAccuracy === 1 ? '' : '&atAccuracy=' + atAccuracy) :
+          (atAccuracy === 1 ? '' : '&at-accuracy=' + atAccuracy) :
           '&auto-advance=false'
         ) +
         `'>` +
