@@ -1,3 +1,5 @@
+const FIXED_DELAY = 20;
+
 function updateProgressText() {
   if(!lessonProgress.hasOwnProperty(lessons[onFolder][onLesson].name)) {
     lessonProgress[lessons[onFolder][onLesson].name] = {
@@ -177,7 +179,7 @@ function hideStroke() {
 }
 
 function draw(skip) {
-  if((skip !== 'skip' && Date.now() - t < 9) || txt === ' ' || txt === ' -') {
+  if((skip !== 'skip' && Date.now() - t < FIXED_DELAY) || txt === ' ' || txt === ' -') {
     window.requestAnimationFrame(draw);
     return;
   }
@@ -250,7 +252,7 @@ function keydown(event) {
     return;
   }
 
-  if(event.key === 'Backspace' && Date.now() - t > 9) {
+  if(event.key === 'Backspace' && Date.now() - t > FIXED_DELAY) {
     pushStenoTape('*');
     t = Date.now();
     return;
